@@ -16,7 +16,7 @@ const createProduct = async (body) => {
         return undefined;
     }
 
-    const newPproroduct = {
+    const newProduct = {
         name: body.name,
         price: body.price,
     };
