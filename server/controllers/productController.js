@@ -1,15 +1,15 @@
 const productService = require("../services/productServices");
 
 // get products
-const getProducts = (req, res) => {
-    const products = productService.getProducts();
+const getProducts =async (req, res) => {
+    const products = await productService.getProducts();
 
     res.send(products);
 };
 
 // get Product By using the Id
-const getProductById = (req, res) => {
-    const product = productService.getProductById(req.params.id);
+const getProductById = async (req, res) => {
+    const product = await productService.getProductById(req.params.id);
 
     if (!product) {
         return res.status(404).json({
@@ -21,8 +21,8 @@ const getProductById = (req, res) => {
 };
 
 // create new product
-const createProduct = (req, res) => {
-    const newProduct = productService.createProduct(req.body);
+const createProduct = async (req, res) => {
+    const newProduct = await productService.createProduct(req.body);
 
     if (!newProduct) {
         return res.status(400).json("Field is missing");
@@ -35,13 +35,17 @@ const createProduct = (req, res) => {
 };
 
 // Update a single product
-const updateProduct = (req, res) => {
-    const updateProduct = productService.updateProduct(req.params.id, req.body);
+const updateProduct = async (req, res) => {
+    const updateProduct = await productService.updateProduct(
+        req.params.id,
+        req.body,
+    );
 
     if (!updateProduct) {
         return res.status(404).json({
-            message: "Update failed"
-        })
+            success: false,
+            message: "Update failed, Product not found",
+        });
     }
     // Send success response
     return res.status(200).json({
@@ -51,14 +55,13 @@ const updateProduct = (req, res) => {
 };
 
 // delete a product
-const deleteProduct = (req, res) => {
+const deleteProduct = async (req, res) => {
+    const deletedProduct = await productService.deleteProduct(req.params.id);
 
-    const deletedProduct = productService.deleteProduct(req.params.id)
-
-    if(!deletedProduct){
+    if (!deletedProduct) {
         return res.status(404).json({
-            message: "delete unsuccessfull"
-        })
+            message: "delete unsuccessfull",
+        });
     }
 
     res.status(200).json({

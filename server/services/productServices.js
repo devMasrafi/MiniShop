@@ -1,79 +1,54 @@
-const products = require("../data/products");
+// const products = require("../data/products");
+const Product = require("../models/Product");
 
-const getProducts = () => {
-    return products;
+const getProducts = async () => {
+    return await Product.find();
 };
 
-const getProductById = (id) => {
-    const product = products.find((product) => {
-        return product.id == id;
-    });
+const getProductById = async (id) => {
+    const product = await Product.findById(id);
 
     return product;
 };
 
-const createProduct = (body) => {
-    const newId = () => {
-        if (products.length === 0) {
-            return 1;
-        }
-
-        const lastProduct = products[products.length - 1];
-        return lastProduct.id + 1;
-    };
-
+const createProduct = async (body) => {
     if (body.name == "" || !body.name || body.price == "" || !body.price) {
         return undefined;
     }
 
-    const newProduct = {
-        id: newId(),
+    const newPproroduct = {
         name: body.name,
         price: body.price,
     };
 
-    products.push(newProduct);
-
-    return newProduct;
+    const product = await Product.create(newProduct);
+    return product;
 };
 
-const updateProduct = (id, body) => {
+const updateProduct = async (id, body) => {
     // Find product
-    const product = products.find((product) => {
-        return product.id == id;
+    const product = await Product.findByIdAndUpdate(id, body, {
+        new: true,
     });
 
     // If not found
-    if (!product || product == null) {
+    if (!product) {
         return undefined;
-    }
-
-    // Update name if sent
-    if (body.name) {
-        product.name = body.name;
-    }
-
-    // Update price if sent
-    if (body.price) {
-        product.price = body.price;
     }
 
     return product;
 };
 
-const deleteProduct = (id) => {
-    const index = products.findIndex((product) => {
-        return product.id == id;
-    });
+const deleteProduct = async (id) => {
+    const deletedProduct = await Product.findByIdAndDelete(id);
 
-    const deletedProduct = products[index]
-
-    if (index === -1) {
-        return undefined
-    }
-    products.splice(index, 1);
-
-    return deletedProduct
+    return deletedProduct;
 };
 
-module.exports = { getProducts, getProductById, createProduct, updateProduct };
+module.exports = {
+    getProducts,
+    getProductById,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+};
