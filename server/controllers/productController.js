@@ -1,105 +1,76 @@
-const products = require("../data/products");
+const productService = require("../services/productServices");
 
 // get products
 const getProducts = (req, res) => {
-  res.send(products);
+    const products = productService.getProducts();
+
+    res.send(products);
 };
 
 // get Product By using the Id
 const getProductById = (req, res) => {
-  const product = products.find((product) => {
-    return product.id == req.params.id;
-  });
+    const product = productService.getProductById(req.params.id);
 
-  res.send(product);
+    if (!product) {
+        return res.status(404).json({
+            message: "Product not found",
+        });
+    }
+
+    res.send(product);
 };
 
 // create new product
 const createProduct = (req, res) => {
-  const newId = () => {
-    if (products.length === 0) {
-      return 1;
+    const newProduct = productService.createProduct(req.body);
+
+    if (!newProduct) {
+        return res.status(400).json("Field is missing");
     }
 
-    const lastProduct = products[products.length - 1];
-    return lastProduct.id + 1;
-  };
-
-  if (
-    req.body.name == "" ||
-    !req.body.name ||
-    req.body.price == "" ||
-    !req.body.price
-  ) {
-    return res.status(400).json({
-      message: "product has empty field",
+    res.status(201).json({
+        message: "Product Created Successfully",
+        newProduct,
     });
-  }
-
-  const newProduct = {
-    id: newId(),
-    name: req.body.name,
-    price: req.body.price,
-  };
-
-  products.push(newProduct);
-
-  res.status(201).json({
-    message: " Product Created Successfully",
-    newProduct,
-  });
 };
 
 // Update a single product
 const updateProduct = (req, res) => {
-  // Find product
-  const product = products.find((product) => {
-    return product.id == req.params.id;
-  });
+    const updateProduct = productService.updateProduct(req.params.id, req.body);
 
-  // If not found
-  if (!product || product == null) {
-    return res.status(404).json("update Failed, Product not Found!");
-  }
-
-  // Update name if sent
-  if (req.body.name) {
-    product.name = req.body.name;
-  }
-
-  // Update price if sent
-  if (req.body.price) {
-    product.price = req.body.price;
-  }
-  // Send success response
-  return res.status(200).json({
-    message: "product updated successfull",
-    product,
-  });
+    if (!updateProduct) {
+        return res.status(404).json({
+            message: "Update failed"
+        })
+    }
+    // Send success response
+    return res.status(200).json({
+        message: "product updated successfull",
+        updateProduct,
+    });
 };
 
 // delete a product
 const deleteProduct = (req, res) => {
-  const index = products.findIndex((product) => {
-    return product.id == req.params.id;
-  });
 
-  if (index === -1) {
-    return res.status(404).json({
-      message: "Product Not Found",
+    const deletedProduct = productService.deleteProduct(req.params.id)
+
+    if(!deletedProduct){
+        return res.status(404).json({
+            message: "delete unsuccessfull"
+        })
+    }
+
+    res.status(200).json({
+        message: "Product deleted successfully",
+        deletedProduct,
     });
-  }
-  products.splice(index, 1);
-
-  res.status(200).json({
-    message: "Product deleted successfully",
-    products,
-  });
 };
+
 module.exports = {
-  getProducts,
-  getProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct,
+    getProducts,
+    getProductById,
+    createProduct,
+    updateProduct,
+    deleteProduct,
 };
