@@ -1,10 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const productRoutes = require("./routes/productRoutes");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 app.use(express.json());
 app.use(productRoutes);
+
+
+// lastPart
+app.use(errorHandler)
 
 // mongoose.connect("mongodb://localhost:27017/miniShop");
 mongoose

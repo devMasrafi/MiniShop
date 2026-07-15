@@ -12,9 +12,6 @@ const getProductById = async (id) => {
 };
 
 const createProduct = async (body) => {
-    if (body.name == "" || !body.name || body.price == "" || !body.price) {
-        return undefined;
-    }
 
     const newProduct = {
         name: body.name,
