@@ -11,35 +11,66 @@ const getProductById = async (id) => {
     return product;
 };
 
-const createProduct = async (body) => {
-
+const createProduct = async (body, userId) => {
     const newProduct = {
         name: body.name,
         price: body.price,
+        description: body.description,
+        owner: userId,
     };
 
     const product = await Product.create(newProduct);
     return product;
 };
 
-const updateProduct = async (id, body) => {
+const updateProduct = async (productId, body, userId) => {
     // Find product
-    const product = await Product.findByIdAndUpdate(id, body, {
+    const product = await Product.findById(productId);
+
+    if (!product) {
+        return {
+            success: false,
+            reason: "NOT_FOUND",
+        };
+    }
+
+    const owner = product.owner.toString();
+    if (owner !== userId) {
+        return {
+            success: false,
+            reason: "NOT_OWNER",
+        };
+    }
+
+    const newProduct = await Product.findByIdAndUpdate(productId, body, {
         new: true,
     });
 
-    // If not found
-    if (!product) {
-        return undefined;
-    }
-
-    return product;
+    return newProduct;
 };
 
-const deleteProduct = async (id) => {
-    const deletedProduct = await Product.findByIdAndDelete(id);
+const deleteProduct = async (productId, userId) => {
+    const product = await Product.findById(productId);
 
-    return deletedProduct;
+    if (!product) {
+        return {
+            success: false,
+            reason: "NOT_FOUND",
+        };
+    }
+
+    const owner = product.owner.toString();
+
+    if (owner !== userId) {
+        return {
+            success: false,
+            reason: "NOT_OWNER",
+        };
+    }
+
+    await Product.findByIdAndDelete(productId);
+
+    return product;
 };
 
 module.exports = {

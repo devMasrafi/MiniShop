@@ -38,14 +38,10 @@ const getProductById = async (req, res, next) => {
 // create new product
 const createProduct = async (req, res, next) => {
     try {
-        const newProduct = await productService.createProduct(req.body);
-
-        if (!newProduct) {
-            return res.status(400).json({
-                success: false,
-                message: "Field is missing",
-            });
-        }
+        const newProduct = await productService.createProduct(
+            req.body,
+            req.user.userId,
+        );
 
         return res.status(201).json({
             message: "Product Created Successfully",
@@ -59,21 +55,28 @@ const createProduct = async (req, res, next) => {
 // Update a single product
 const updateProduct = async (req, res, next) => {
     try {
-        const updateProduct = await productService.updateProduct(
+        const product = await productService.updateProduct(
             req.params.id,
             req.body,
+            req.user.userId,
         );
 
-        if (!updateProduct) {
+        if (product.reason === "NOT_FOUND") {
             return res.status(404).json({
                 success: false,
                 message: "Update failed, Product not found",
             });
         }
+        if (product.reason === "NOT_OWNER") {
+            return res.status(403).json({
+                success: false,
+                message: "Update Failed, You are not the owner",
+            });
+        }
         // Send success response
         return res.status(200).json({
             message: "Product updated successfull",
-            updateProduct,
+            product,
         });
     } catch (error) {
         next(error);
@@ -83,19 +86,26 @@ const updateProduct = async (req, res, next) => {
 // delete a product
 const deleteProduct = async (req, res, next) => {
     try {
-        const deletedProduct = await productService.deleteProduct(
+        const product = await productService.deleteProduct(
             req.params.id,
+            req.user.userId,
         );
 
-        if (!deletedProduct) {
+        if (product.reason === "NOT_FOUND") {
             return res.status(404).json({
-                message: "delete unsuccessfull",
+                message: "Product Not Found!",
+            });
+        }
+
+        if (product.reason === "NOT_OWNER") {
+            return res.status(403).json({
+                message: "Forbidden! not product owner",
             });
         }
 
         return res.status(200).json({
             message: "Product deleted successfully",
-            deletedProduct,
+            product,
         });
     } catch (error) {
         next(error);
