@@ -1,5 +1,25 @@
 const Product = require("../models/Product");
 
+const findOwnedProduct = async (productId, userId) => {
+    const product = await Product.findById(productId);
+
+    if (!product) {
+        return {
+            success: false,
+            reason: "NOT_FOUND",
+        };
+    }
+
+    const owner = product.owner.toString();
+    if (owner !== userId) {
+        return {
+            success: false,
+            reason: "NOT_OWNER",
+        };
+    }
+    return product;
+};
+
 const getProducts = async () => {
     return await Product.find().populate("owner", "-password");
 };
@@ -35,22 +55,10 @@ const createProduct = async (body, userId) => {
 };
 
 const updateProduct = async (productId, body, userId) => {
-    // Find product
-    const product = await Product.findById(productId);
+    const product = await findOwnedProduct(productId, userId);
 
-    if (!product) {
-        return {
-            success: false,
-            reason: "NOT_FOUND",
-        };
-    }
-
-    const owner = product.owner.toString();
-    if (owner !== userId) {
-        return {
-            success: false,
-            reason: "NOT_OWNER",
-        };
+    if (product.success === false) {
+        return product;
     }
 
     const newProduct = await Product.findByIdAndUpdate(productId, body, {
@@ -61,22 +69,10 @@ const updateProduct = async (productId, body, userId) => {
 };
 
 const deleteProduct = async (productId, userId) => {
-    const product = await Product.findById(productId);
+    const product = await findOwnedProduct(productId, userId);
 
-    if (!product) {
-        return {
-            success: false,
-            reason: "NOT_FOUND",
-        };
-    }
-
-    const owner = product.owner.toString();
-
-    if (owner !== userId) {
-        return {
-            success: false,
-            reason: "NOT_OWNER",
-        };
+    if (product.success === false) {
+        return product;
     }
 
     await Product.findByIdAndDelete(productId);
