@@ -35,6 +35,20 @@ const getProductById = async (req, res, next) => {
     }
 };
 
+// get my proudct route
+const getMyProducts = async (req, res, next) => {
+    try {
+        const products = await productService.getMyProducts(req.user.userId);
+
+        return res.status(200).json({
+            success: true,
+            data: products,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // create new product
 const createProduct = async (req, res, next) => {
     try {
@@ -44,6 +58,7 @@ const createProduct = async (req, res, next) => {
         );
 
         return res.status(201).json({
+            success: true,
             message: "Product Created Successfully",
             newProduct,
         });
@@ -75,6 +90,7 @@ const updateProduct = async (req, res, next) => {
         }
         // Send success response
         return res.status(200).json({
+            success: true,
             message: "Product updated successfull",
             product,
         });
@@ -104,6 +120,7 @@ const deleteProduct = async (req, res, next) => {
         }
 
         return res.status(200).json({
+            success: true,
             message: "Product deleted successfully",
             product,
         });
@@ -118,4 +135,5 @@ module.exports = {
     createProduct,
     updateProduct,
     deleteProduct,
+    getMyProducts,
 };

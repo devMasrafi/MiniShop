@@ -1,14 +1,25 @@
-// const products = require("../data/products");
 const Product = require("../models/Product");
 
 const getProducts = async () => {
-    return await Product.find();
+    return await Product.find().populate("owner", "-password");
 };
 
 const getProductById = async (id) => {
     const product = await Product.findById(id);
 
-    return product;
+    if (!product) {
+        return null;
+    }
+
+    return product.populate("owner", "-password");
+};
+
+const getMyProducts = async (userId) => {
+    const products = await Product.find({
+        owner: userId,
+    });
+
+    return products.populate("owner", "-password");
 };
 
 const createProduct = async (body, userId) => {
@@ -79,4 +90,5 @@ module.exports = {
     createProduct,
     updateProduct,
     deleteProduct,
+    getMyProducts,
 };
