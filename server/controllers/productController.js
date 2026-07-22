@@ -3,11 +3,20 @@ const productService = require("../services/productServices");
 // get products
 const getProducts = async (req, res, next) => {
     try {
-        const products = await productService.getProducts();
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
 
-        return res.status(200).send({
+        const result = await productService.getProducts(page, limit);
+
+        return res.status(200).json({
             success: true,
-            data: products,
+            data: result.products,
+            pagination: {
+                page,
+                limit,
+                totalProducts: result.totalProducts,
+                totalPages: result.totalPages,
+            },
         });
     } catch (error) {
         next(error);

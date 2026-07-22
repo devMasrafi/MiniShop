@@ -20,8 +20,23 @@ const findOwnedProduct = async (productId, userId) => {
     return product;
 };
 
-const getProducts = async () => {
-    return await Product.find().populate("owner", "-password");
+const getProducts = async (page, limit) => {
+    const skip = limit * (page - 1);
+
+    const totalProducts = await Product.countDocuments();
+
+    const products = await Product.find()
+        .skip(skip)
+        .limit(limit)
+        .populate("owner", "-password");
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    return {
+        products,
+        totalProducts,
+        totalPages,
+    };
 };
 
 const getProductById = async (id) => {
