@@ -20,12 +20,18 @@ const findOwnedProduct = async (productId, userId) => {
     return product;
 };
 
-const getProducts = async (page, limit) => {
+const getProducts = async (page, limit, search) => {
     const skip = limit * (page - 1);
+    const filter = {
+        name: {
+            $regex: search,
+            $options: "i",
+        },
+    };
 
-    const totalProducts = await Product.countDocuments();
+    const totalProducts = await Product.countDocuments(filter);
 
-    const products = await Product.find()
+    const products = await Product.find(filter)
         .skip(skip)
         .limit(limit)
         .populate("owner", "-password");
