@@ -6,8 +6,9 @@ const getProducts = async (req, res, next) => {
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;
         const search = req.query.search || "";
+        const sort = req.query.sort || "";
 
-        const result = await productService.getProducts(page, limit, search);
+        const result = await productService.getProducts(page, limit, search, sort);
 
         return res.status(200).json({
             success: true,

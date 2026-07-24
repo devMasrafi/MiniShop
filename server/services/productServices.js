@@ -20,8 +20,40 @@ const findOwnedProduct = async (productId, userId) => {
     return product;
 };
 
-const getProducts = async (page, limit, search) => {
+// allowed field
+const allowedFields = ["name", "price"];
+
+const getSort = (sort) => {
+    let field = sort;
+    let direction = 1;
+
+    if (!sort) {
+        return null;
+    }
+
+    if (sort.startsWith("-")) {
+        field = sort.slice(1);
+        direction = -1;
+    }
+
+    if (!allowedFields.includes(field)) {
+        const error = new Error("Invalid sorting field");
+        error.statusCode = 400;
+
+        throw error;
+    }
+
+    return {
+        field,
+        direction,
+    };
+};
+
+// actual get request
+const getProducts = async (page, limit, search, sort) => {
     const skip = limit * (page - 1);
+
+    // filter
     const filter = {
         name: {
             $regex: search,
@@ -29,13 +61,25 @@ const getProducts = async (page, limit, search) => {
         },
     };
 
+    // run sorting helper
+    const sortResult = getSort(sort);
+
+    // create mongoose query
+    let query = Product.find(filter);
+
+    // apply soritng if requested
+    if (sortResult) {
+        query.sort({
+            [sortResult.field]: sortResult.direction,
+        });
+    }
+
+    query.skip(skip);
+    query.limit(limit);
+
+    const products = await query.populate("owner", "-password");
+
     const totalProducts = await Product.countDocuments(filter);
-
-    const products = await Product.find(filter)
-        .skip(skip)
-        .limit(limit)
-        .populate("owner", "-password");
-
     const totalPages = Math.ceil(totalProducts / limit);
 
     return {
