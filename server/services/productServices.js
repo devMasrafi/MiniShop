@@ -50,7 +50,7 @@ const getSort = (sort) => {
 };
 
 // actual get request
-const getProducts = async (page, limit, search, sort) => {
+const getProducts = async (page, limit, search, sort, minPrice, maxPrice) => {
     const skip = limit * (page - 1);
 
     // filter
@@ -60,7 +60,42 @@ const getProducts = async (page, limit, search, sort) => {
             $options: "i",
         },
     };
+    // check min and max price
+    if (minPrice !== null || maxPrice !== null) {
+        // check min price
+        if (minPrice !== null && (isNaN(minPrice) || minPrice < 0)) {
+            const error = new Error("Invalid minimum price");
+            error.statusCode = 400;
+            throw error;
+        }
 
+        // check max price
+        if (maxPrice !== null && (isNaN(maxPrice) || maxPrice < 0)) {
+            const error = new Error("Invalid maximum price");
+            error.statusCode = 400;
+            throw error;
+        }
+
+        // check range
+        if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
+            const error = new Error(
+                "Minimum price cannot be higher than maximum price",
+            );
+            error.statusCode = 400;
+            throw error;
+        }
+
+        // now create object
+        filter.price = {};
+
+        if (minPrice !== null) {
+            filter.price.$gte = minPrice;
+        }
+
+        if (maxPrice !== null) {
+            filter.price.$lte = maxPrice;
+        }
+    }
     // run sorting helper
     const sortResult = getSort(sort);
 

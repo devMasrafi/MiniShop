@@ -8,7 +8,18 @@ const getProducts = async (req, res, next) => {
         const search = req.query.search || "";
         const sort = req.query.sort || "";
 
-        const result = await productService.getProducts(page, limit, search, sort);
+        // max-min price
+        const minPrice = req.query.minPrice ? Number(req.query.minPrice) : null;
+        const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : null;
+
+        const result = await productService.getProducts(
+            page,
+            limit,
+            search,
+            sort,
+            minPrice,
+            maxPrice,
+        );
 
         return res.status(200).json({
             success: true,
