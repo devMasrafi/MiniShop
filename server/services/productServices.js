@@ -50,7 +50,15 @@ const getSort = (sort) => {
 };
 
 // actual get request
-const getProducts = async (page, limit, search, sort, minPrice, maxPrice) => {
+const getProducts = async (
+    page,
+    limit,
+    search,
+    sort,
+    minPrice,
+    maxPrice,
+    category,
+) => {
     const skip = limit * (page - 1);
 
     // filter
@@ -96,6 +104,11 @@ const getProducts = async (page, limit, search, sort, minPrice, maxPrice) => {
             filter.price.$lte = maxPrice;
         }
     }
+
+    if (category) {
+        filter.category = category;
+    }
+
     // run sorting helper
     const sortResult = getSort(sort);
 
@@ -147,6 +160,7 @@ const createProduct = async (body, userId) => {
         name: body.name,
         price: body.price,
         description: body.description,
+        category: body.category,
         owner: userId,
     };
 

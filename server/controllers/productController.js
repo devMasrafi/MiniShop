@@ -7,6 +7,7 @@ const getProducts = async (req, res, next) => {
         const limit = Number(req.query.limit) || 10;
         const search = req.query.search || "";
         const sort = req.query.sort || "";
+        const category = req.query.category || "";
 
         // max-min price
         const minPrice = req.query.minPrice ? Number(req.query.minPrice) : null;
@@ -19,6 +20,7 @@ const getProducts = async (req, res, next) => {
             sort,
             minPrice,
             maxPrice,
+            category,
         );
 
         return res.status(200).json({

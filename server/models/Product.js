@@ -16,6 +16,10 @@ const productSchema = mongoose.Schema({
         type: String,
         trim: true,
     },
+    category: {
+        type: String,
+        required: true,
+    },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
