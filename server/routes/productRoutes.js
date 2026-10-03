@@ -14,7 +14,7 @@ const router = express.Router();
 
 // GET/Fetch All
 router.get("/", (req, res) => {
-    res.send("Welcome to my first Express server!");
+    res.send("Welcome to MiniShop Express server!");
 });
 
 router.get("/products", getProducts);
