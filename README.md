@@ -1,7 +1,8 @@
 # MiniShop
 
-A simple REST API built with:
+A E-Commerce Full Stack REST API built with:
 
+- Reactjs with vite
 - Node.js
 - Express.js
 - MongoDB
@@ -17,6 +18,7 @@ A simple REST API built with:
 
 ## Technologies
 
+- reactjs
 - Express
 - MongoDB
 - Mongoose
@@ -25,6 +27,7 @@ A simple REST API built with:
 
 ```bash
 npm install
+npm run dev
 npm start
 ```
 
