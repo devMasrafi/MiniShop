@@ -59,20 +59,6 @@ const getProductById = async (req, res, next) => {
     }
 };
 
-// get my proudct route
-const getMyProducts = async (req, res, next) => {
-    try {
-        const products = await productService.getMyProducts(req.user.userId);
-
-        return res.status(200).json({
-            success: true,
-            data: products,
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
 // create new product
 const createProduct = async (req, res, next) => {
     try {
@@ -85,6 +71,20 @@ const createProduct = async (req, res, next) => {
             success: true,
             message: "Product Created Successfully",
             newProduct,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// get my proudct route
+const getMyProducts = async (req, res, next) => {
+    try {
+        const products = await productService.getMyProducts(req.user.userId);
+
+        return res.status(200).json({
+            success: true,
+            data: products,
         });
     } catch (error) {
         next(error);
@@ -156,8 +156,8 @@ const deleteProduct = async (req, res, next) => {
 module.exports = {
     getProducts,
     getProductById,
+    getMyProducts,
     createProduct,
     updateProduct,
     deleteProduct,
-    getMyProducts,
 };
