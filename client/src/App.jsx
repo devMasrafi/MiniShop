@@ -1,9 +1,7 @@
+
+
 function App() {
-  return (
-    <>
-      <h1  className="underline text-2xl">Hello world!</h1>
-    </>
-  );
+  return <></>;
 }
 
 export default App;
