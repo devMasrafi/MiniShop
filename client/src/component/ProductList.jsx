@@ -4,10 +4,34 @@ import ProductCard from './ProductCard'
 import { FaSearch } from 'react-icons/fa'
 
 const ProductList = () => {
+  const categoryData = [
+    {
+      id: 1,
+      name: 'Electronics',
+      value: 'electronics',
+    },
+    {
+      id: 2,
+      name: 'Fasion Appreal',
+      value: 'Fasion',
+    },
+    {
+      id: 3,
+      name: 'Furniture',
+      value: 'furniture',
+    },
+    {
+      id: 4,
+      name: 'Book and Comics',
+      value: 'books',
+    },
+  ]
+
   const [products, setProducts] = useState([])
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [category, setCategory] = useState('')
 
   const handleSearch = (e) => {
     // console.log(e.target.value)
@@ -15,18 +39,30 @@ const ProductList = () => {
   }
 
   const handleSearchClick = () => {
-    getProduct(search)
-    setSearch('')
+    getProduct(search, category)
   }
   // const navigate = useNavigate();
 
-  const getProduct = async (searchValue) => {
+  const handleCategory = (e) => {
+    setCategory(e.target.value)
+    // console.log(e.target.value)
+    getProduct(search, e.target.value)
+  }
+
+  const getProduct = async (searchValue, category) => {
     try {
-      let url = 'http://localhost:5000/products'
+      const params = new URLSearchParams()
 
       if (searchValue) {
-        url = `http://localhost:5000/products?search=${searchValue}`
+        params.set('search', searchValue)
       }
+      if (category) {
+        params.set('category', category)
+      }
+
+      console.log(params)
+
+      let url = `http://localhost:5000/products?${params.toString()}`
 
       const response = await fetch(url)
 
@@ -36,7 +72,6 @@ const ProductList = () => {
 
       const result = await response.json()
 
-      console.log(result)
       setProducts(result)
     } catch (error) {
       console.log('Caught Error: ', error)
@@ -49,8 +84,6 @@ const ProductList = () => {
   useEffect(() => {
     getProduct('')
   }, [])
-
-  console.log('ProductList is running')
 
   return (
     <section>
@@ -95,7 +128,27 @@ const ProductList = () => {
               <h1 className="text-2xl font-semibold">Filter: </h1>
 
               <div className="rounded-md bg-gray-600/20 p-5">
-                Category Selection
+                <h1 className="text-md my-3 tracking-wider capitalize">
+                  Category Selection
+                </h1>
+                <div>
+                  {categoryData.map((item) => {
+                    return (
+                      <div key={item.id}>
+                        <label className="flex items-center gap-2 tracking-wide capitalize">
+                          <input
+                            type="radio"
+                            name="category"
+                            value={item.value}
+                            checked={category === item.value}
+                            onChange={handleCategory}
+                          />
+                          {item.name}
+                        </label>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
 
               <div className="rounded-md bg-gray-600/20 p-5">
