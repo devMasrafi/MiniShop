@@ -34,6 +34,7 @@ const ProductList = () => {
   const [category, setCategory] = useState('')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
+  const [sort, setSort] = useState('')
 
   const applyFilter = () => {
     getProduct({
@@ -41,6 +42,7 @@ const ProductList = () => {
       category,
       minPrice,
       maxPrice,
+      sort,
     })
   }
 
@@ -49,11 +51,15 @@ const ProductList = () => {
     setCategory('')
     setMinPrice('')
     setMaxPrice('')
+    setSort('')
 
     getProduct({})
   }
 
   const getProduct = async (filter) => {
+    setIsLoading(true)
+    setError('')
+
     try {
       const params = new URLSearchParams()
 
@@ -69,8 +75,10 @@ const ProductList = () => {
       if (filter.maxPrice) {
         params.set('maxPrice', filter.maxPrice)
       }
+      if (filter.sort) {
+        params.set('sort', filter.sort)
+      }
 
-      console.log(params)
 
       let url = `http://localhost:5000/products?${params.toString()}`
 
@@ -125,13 +133,19 @@ const ProductList = () => {
                 </button>
               </div>
 
-              <button className="rounded-sm bg-gray-600 px-16 py-1 capitalize">
-                search
-              </button>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="rounded-md border px-3 py-2 bg-white"
+              >
+                <option value="">Default order</option>
+                <option value="price">Price: Low to High</option>
+                <option value="-price">Price: High to Low</option>
+              </select>
 
-              <button className="rounded-sm bg-gray-600 px-16 py-1 capitalize">
+              {/* <button className="rounded-sm bg-gray-600 px-16 py-1 capitalize">
                 search
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -188,7 +202,7 @@ const ProductList = () => {
 
               <div className="rounded-md bg-gray-600/20 p-5">
                 <div>
-                  <h2>Price Range</h2>
+                  <h2 className="my-2">Price Range</h2>
                   <div className="flex flex-col gap-2">
                     <div className="rounded-md border p-2">
                       <h2 className="text-gray-400">minimum</h2>
@@ -228,13 +242,11 @@ const ProductList = () => {
                 <p>Products grid update with search and filter</p>
 
                 <h2 className="shrink-0 text-right">
-                  {products.length !== 0
-                    ? isLoading
-                      ? 'Loading'
-                      : error
-                        ? '0'
-                        : `${products.pagination.totalProducts} `
-                    : 'Loading...'}{' '}
+                  {isLoading
+                    ? 'Loading'
+                    : error
+                      ? '0'
+                      : `${products.pagination.totalProducts} `}{' '}
                   products
                 </h2>
               </div>
@@ -246,6 +258,8 @@ const ProductList = () => {
                   <div>
                     <p>{error.message}</p>
                   </div>
+                ) : products.data.length === 0 ? (
+                  'No products found'
                 ) : (
                   products.data.map((item) => {
                     return (
