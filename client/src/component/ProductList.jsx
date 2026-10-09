@@ -32,32 +32,42 @@ const ProductList = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
 
-  const handleSearch = (e) => {
-    // console.log(e.target.value)
-    setSearch(e.target.value)
+  const applyFilter = () => {
+    getProduct({
+      search,
+      category,
+      minPrice,
+      maxPrice,
+    })
   }
 
-  const handleSearchClick = () => {
-    getProduct(search, category)
-  }
-  // const navigate = useNavigate();
+  const resetFilter = () => {
+    setSearch('')
+    setCategory('')
+    setMinPrice('')
+    setMaxPrice('')
 
-  const handleCategory = (e) => {
-    setCategory(e.target.value)
-    // console.log(e.target.value)
-    getProduct(search, e.target.value)
+    getProduct({})
   }
 
-  const getProduct = async (searchValue, category) => {
+  const getProduct = async (filter) => {
     try {
       const params = new URLSearchParams()
 
-      if (searchValue) {
-        params.set('search', searchValue)
+      if (filter.search) {
+        params.set('search', filter.search)
       }
-      if (category) {
-        params.set('category', category)
+      if (filter.category) {
+        params.set('category', filter.category)
+      }
+      if (filter.minPrice) {
+        params.set('minPrice', filter.minPrice)
+      }
+      if (filter.maxPrice) {
+        params.set('maxPrice', filter.maxPrice)
       }
 
       console.log(params)
@@ -74,7 +84,6 @@ const ProductList = () => {
 
       setProducts(result)
     } catch (error) {
-      console.log('Caught Error: ', error)
       setError(error)
     } finally {
       setIsLoading(false)
@@ -82,7 +91,7 @@ const ProductList = () => {
   }
 
   useEffect(() => {
-    getProduct('')
+    getProduct({})
   }, [])
 
   return (
@@ -101,12 +110,16 @@ const ProductList = () => {
                   className="text-md rounded-l-md border px-3 py-2"
                   placeholder="Enter Product Name"
                   value={search}
-                  onChange={handleSearch}
+                  onChange={(e) => {
+                    setSearch(e.target.value)
+                  }}
                 />
 
                 <button
                   className="text-md rounded-r-md border-y border-r px-3 py-3"
-                  onClick={handleSearchClick}
+                  onClick={() => {
+                    applyFilter()
+                  }}
                 >
                   <FaSearch />
                 </button>
@@ -125,7 +138,27 @@ const ProductList = () => {
           <div className="flex gap-5">
             {/* filter */}
             <div className="sticky top-2 flex w-50 flex-col gap-3 self-start">
-              <h1 className="text-2xl font-semibold">Filter: </h1>
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-semibold">Filter: </h1>
+                <div className="flex gap-2">
+                  <button
+                    className="cursor-pointer rounded-md bg-gray-600 px-2 py-1 text-white capitalize"
+                    onClick={() => {
+                      applyFilter()
+                    }}
+                  >
+                    apply
+                  </button>
+                  <button
+                    className="cursor-pointer rounded-md bg-gray-600 px-2 py-1 text-white capitalize"
+                    onClick={() => {
+                      resetFilter()
+                    }}
+                  >
+                    reset
+                  </button>
+                </div>
+              </div>
 
               <div className="rounded-md bg-gray-600/20 p-5">
                 <h1 className="text-md my-3 tracking-wider capitalize">
@@ -141,7 +174,9 @@ const ProductList = () => {
                             name="category"
                             value={item.value}
                             checked={category === item.value}
-                            onChange={handleCategory}
+                            onChange={(e) => {
+                              setCategory(e.target.value)
+                            }}
                           />
                           {item.name}
                         </label>
@@ -152,12 +187,39 @@ const ProductList = () => {
               </div>
 
               <div className="rounded-md bg-gray-600/20 p-5">
-                Price Selection
+                <div>
+                  <h2>Price Range</h2>
+                  <div className="flex flex-col gap-2">
+                    <div className="rounded-md border p-2">
+                      <h2 className="text-gray-400">minimum</h2>
+                      <input
+                        type="number"
+                        placeholder="0"
+                        className="w-full outline-none"
+                        value={minPrice}
+                        onChange={(e) => {
+                          setMinPrice(e.target.value)
+                        }}
+                      />
+                    </div>
+                    <div className="rounded-md border p-2">
+                      <h2 className="text-gray-400">maximum</h2>
+                      <input
+                        type="number"
+                        className="w-full outline-none"
+                        placeholder="0"
+                        value={maxPrice}
+                        onChange={(e) => {
+                          setMaxPrice(e.target.value)
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              <div className="rounded-md bg-gray-600/20 p-5">
+              {/* <div className="rounded-md bg-gray-600/20 p-5">
                 Auto Select price range
-              </div>
+              </div> */}
             </div>
 
             {/* products */}
