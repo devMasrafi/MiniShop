@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 // import { useNavigate } from "react-router";
-import ProductCard from './ProductCard'
-import { FaSearch } from 'react-icons/fa'
 
-const ProductList = () => {
+import { FaSearch } from 'react-icons/fa'
+import ProductCard from '../component/productComponents/ProductCard'
+
+const Products = () => {
   const categoryData = [
     {
       id: 1,
@@ -79,7 +80,6 @@ const ProductList = () => {
         params.set('sort', filter.sort)
       }
 
-
       let url = `http://localhost:5000/products?${params.toString()}`
 
       const response = await fetch(url)
@@ -105,43 +105,44 @@ const ProductList = () => {
   return (
     <section>
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-2xl underline">MiniShop Products</h1>
-
         <div>
           {/* tool box */}
           <div className="sticky top-2 w-full">
-            <div className="my-5 flex justify-end gap-2">
-              <div className="items flex rounded-md bg-white">
-                {/* Search Tool */}
-                <input
-                  type="text"
-                  className="text-md rounded-l-md border px-3 py-2"
-                  placeholder="Enter Product Name"
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value)
-                  }}
-                />
+            <div className="my-5 flex justify-between gap-2">
+              <h2 className="text-xl">Mini Shop Products: </h2>
+              <div className="flex items-center gap-x-3">
+                <div className="items flex rounded-md bg-white">
+                  {/* Search Tool */}
+                  <input
+                    type="text"
+                    className="text-md rounded-l-md border px-3 py-2"
+                    placeholder="Enter Product Name"
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value)
+                    }}
+                  />
 
-                <button
-                  className="text-md rounded-r-md border-y border-r px-3 py-3"
-                  onClick={() => {
-                    applyFilter()
-                  }}
+                  <button
+                    className="text-md rounded-r-md border-y border-r px-3 py-3"
+                    onClick={() => {
+                      applyFilter()
+                    }}
+                  >
+                    <FaSearch />
+                  </button>
+                </div>
+
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  className="rounded-md border bg-white px-3 py-2"
                 >
-                  <FaSearch />
-                </button>
+                  <option value="">Default order</option>
+                  <option value="price">Price: Low to High</option>
+                  <option value="-price">Price: High to Low</option>
+                </select>
               </div>
-
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="rounded-md border px-3 py-2 bg-white"
-              >
-                <option value="">Default order</option>
-                <option value="price">Price: Low to High</option>
-                <option value="-price">Price: High to Low</option>
-              </select>
 
               {/* <button className="rounded-sm bg-gray-600 px-16 py-1 capitalize">
                 search
@@ -151,7 +152,7 @@ const ProductList = () => {
 
           <div className="flex gap-5">
             {/* filter */}
-            <div className="sticky top-2 flex w-50 flex-col gap-3 self-start">
+            <div className="sticky top-20 flex w-50 flex-col gap-3 self-start">
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-semibold">Filter: </h1>
                 <div className="flex gap-2">
@@ -239,7 +240,7 @@ const ProductList = () => {
             {/* products */}
             <div className="min-w-0 flex-1">
               <div className="my-5 flex w-full items-center justify-between gap-4">
-                <p>Products grid update with search and filter</p>
+                <p>Products grid update with search and filter apply</p>
 
                 <h2 className="shrink-0 text-right">
                   {isLoading
@@ -280,4 +281,4 @@ const ProductList = () => {
   )
 }
 
-export default ProductList
+export default Products
