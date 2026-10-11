@@ -8,6 +8,13 @@ const errorHandler = (error, req, res, next) => {
         });
     }
 
+    if (error.code === 11000 && error.keyPattern?.email) {
+        return res.status(409).json({
+            success: false,
+            message: "this email is already registered",
+        });
+    }
+
     return res.status(error.statusCode || 500).json({
         success: false,
         message: error.message,
