@@ -34,8 +34,11 @@ const Login = () => {
           throw new Error(result.message)
         }
 
-        navigate('/products')
         // console.log(result)
+
+        // console.log(typeof result.jwtToken)
+        localStorage.setItem('token', result.jwtToken)
+        navigate('/products')
       } catch (error) {
         setError(error.message)
       }
