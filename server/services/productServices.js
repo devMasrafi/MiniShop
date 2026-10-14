@@ -1,5 +1,7 @@
 const Product = require("../models/Product");
 
+// Find a product and check whether it belongs to the requesting user.
+
 const findOwnedProduct = async (productId, userId) => {
     const product = await Product.findById(productId);
 
@@ -10,26 +12,27 @@ const findOwnedProduct = async (productId, userId) => {
         };
     }
 
-    const owner = product.owner.toString();
-    if (owner !== userId) {
+    if (product.owner.toString() !== userId) {
         return {
             success: false,
             reason: "NOT_OWNER",
         };
     }
+
     return product;
 };
 
-// allowed field
+// Fields that can be used for sorting.
 const allowedFields = ["name", "price"];
 
+// Validate the requested sort field and determine its direction.
 const getSort = (sort) => {
-    let field = sort;
-    let direction = 1;
-
     if (!sort) {
         return null;
     }
+
+    let field = sort;
+    let direction = 1;
 
     if (sort.startsWith("-")) {
         field = sort.slice(1);
@@ -39,17 +42,13 @@ const getSort = (sort) => {
     if (!allowedFields.includes(field)) {
         const error = new Error("Invalid sorting field");
         error.statusCode = 400;
-
         throw error;
     }
 
-    return {
-        field,
-        direction,
-    };
+    return { field, direction };
 };
 
-// actual get request
+// Get products with filtering, sorting, and pagination.
 const getProducts = async (
     page,
     limit,
@@ -61,30 +60,28 @@ const getProducts = async (
 ) => {
     const skip = limit * (page - 1);
 
-    // filter
+    // Build the product filter.
     const filter = {
         name: {
             $regex: search,
             $options: "i",
         },
     };
-    // check min and max price
+
+    // Validate and apply price filters.
     if (minPrice !== null || maxPrice !== null) {
-        // check min price
         if (minPrice !== null && (isNaN(minPrice) || minPrice < 0)) {
             const error = new Error("Invalid minimum price");
             error.statusCode = 400;
             throw error;
         }
 
-        // check max price
         if (maxPrice !== null && (isNaN(maxPrice) || maxPrice < 0)) {
             const error = new Error("Invalid maximum price");
             error.statusCode = 400;
             throw error;
         }
 
-        // check range
         if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
             const error = new Error(
                 "Minimum price cannot be higher than maximum price",
@@ -93,7 +90,6 @@ const getProducts = async (
             throw error;
         }
 
-        // now create object
         filter.price = {};
 
         if (minPrice !== null) {
@@ -109,13 +105,12 @@ const getProducts = async (
         filter.category = category;
     }
 
-    // run sorting helper
+    // Prepare the sort options.
     const sortResult = getSort(sort);
 
-    // create mongoose query
+    // Build and execute the database query.
     let query = Product.find(filter);
 
-    // apply soritng if requested
     if (sortResult) {
         query.sort({
             [sortResult.field]: sortResult.direction,
@@ -127,6 +122,7 @@ const getProducts = async (
 
     const products = await query.populate("owner", "-password");
 
+    // Count matching products for pagination.
     const totalProducts = await Product.countDocuments(filter);
     const totalPages = Math.ceil(totalProducts / limit);
 
@@ -137,6 +133,7 @@ const getProducts = async (
     };
 };
 
+// Get one product by its ID.
 const getProductById = async (id) => {
     const product = await Product.findById(id);
 
@@ -147,6 +144,7 @@ const getProductById = async (id) => {
     return product.populate("owner", "-password");
 };
 
+// Get products belonging to a specific user.
 const getMyProducts = async (userId) => {
     const products = await Product.find({
         owner: userId,
@@ -155,6 +153,7 @@ const getMyProducts = async (userId) => {
     return products.populate("owner", "-password");
 };
 
+// Create a product for the requesting user.
 const createProduct = async (body, userId) => {
     const newProduct = {
         name: body.name,
@@ -164,10 +163,10 @@ const createProduct = async (body, userId) => {
         owner: userId,
     };
 
-    const product = await Product.create(newProduct);
-    return product;
+    return Product.create(newProduct);
 };
 
+// Update a product after checking ownership.
 const updateProduct = async (productId, body, userId) => {
     const product = await findOwnedProduct(productId, userId);
 
@@ -175,13 +174,12 @@ const updateProduct = async (productId, body, userId) => {
         return product;
     }
 
-    const newProduct = await Product.findByIdAndUpdate(productId, body, {
+    return Product.findByIdAndUpdate(productId, body, {
         new: true,
     });
-
-    return newProduct;
 };
 
+// Delete a product after checking ownership.
 const deleteProduct = async (productId, userId) => {
     const product = await findOwnedProduct(productId, userId);
 
