@@ -6,6 +6,7 @@ import { FaAngleLeft } from 'react-icons/fa'
 
 const AuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false)
+  const [signupComplete, setSignupComplete] = useState(false)
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -17,6 +18,11 @@ const AuthPage = () => {
       </Link>
       <div className="flex justify-around rounded-3xl bg-gray-400 p-15">
         <div className="my-auto rounded-xl bg-white p-5">
+          {/* account created login message*/}
+          <div className="mx-auto max-w-60 text-center text-lg text-gray-500">
+            {signupComplete ? 'Account Creation Successfull!! Login now' : ''}
+          </div>
+          {/* forum selector and components */}
           <div className="my-2 flex w-90 justify-around rounded-2xl bg-gray-500 py-2">
             <button
               className={`cursor-pointer px-10 py-1 ${isSignUp ? 'text-gray-300' : 'rounded-xl bg-white '}`}
@@ -30,12 +36,22 @@ const AuthPage = () => {
               className={`cursor-pointer px-10 py-1 ${isSignUp ? 'rounded-xl bg-white ' : 'text-gray-300'}`}
               onClick={() => {
                 setIsSignUp(true)
+                setSignupComplete(false)
               }}
             >
               Sign up
             </button>
           </div>
-          {isSignUp ? <SignUp /> : <Login />}
+          {isSignUp ? (
+            <SignUp
+              onSignupSuccess={() => {
+                setIsSignUp(false)
+                setSignupComplete(true)
+              }}
+            />
+          ) : (
+            <Login />
+          )}
         </div>
         <div>
           <img

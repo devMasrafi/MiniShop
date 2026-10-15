@@ -1,16 +1,13 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 
-const SignUp = () => {
+const SignUp = ({ onSignupSuccess }) => {
   const [userName, setUserName] = useState('')
   const [userEmail, setUserEmail] = useState('')
   const [userPassword, setUserPassword] = useState('')
   const [userConfirmPassword, setUserConfirmPassword] = useState('')
   const [error, setError] = useState('')
 
-  //   const [userData, setUserData] = useState({})
-
-  const navigate = useNavigate()
   const checkPass = () => {
     if (userConfirmPassword !== userPassword) {
       setError('Password dose not match')
@@ -27,7 +24,7 @@ const SignUp = () => {
       return
     }
 
-    console.log('registering now...')
+    // console.log('registering now...')
 
     const data = {
       name: userName,
@@ -47,13 +44,13 @@ const SignUp = () => {
         })
 
         const result = await signUp.json()
-        console.log(result)
+        // console.log(result)
 
         if (!signUp.ok) {
           throw new Error(result.message)
         }
 
-        navigate('/auth')
+        onSignupSuccess()
       } catch (error) {
         setError(error.message)
       }
