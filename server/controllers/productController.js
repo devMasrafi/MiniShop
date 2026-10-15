@@ -97,7 +97,6 @@ const updateProduct = async (req, res, next) => {
         const product = await productService.updateProduct(
             req.params.id,
             req.body,
-            req.user.userId,
         );
 
         if (product.reason === "NOT_FOUND") {
@@ -106,12 +105,7 @@ const updateProduct = async (req, res, next) => {
                 message: "Update failed, Product not found",
             });
         }
-        if (product.reason === "NOT_OWNER") {
-            return res.status(403).json({
-                success: false,
-                message: "Update Failed, You are not the owner",
-            });
-        }
+
         // Send success response
         return res.status(200).json({
             success: true,
@@ -126,20 +120,11 @@ const updateProduct = async (req, res, next) => {
 // delete a product
 const deleteProduct = async (req, res, next) => {
     try {
-        const product = await productService.deleteProduct(
-            req.params.id,
-            req.user.userId,
-        );
+        const product = await productService.deleteProduct(req.params.id);
 
         if (product.reason === "NOT_FOUND") {
             return res.status(404).json({
                 message: "Product Not Found!",
-            });
-        }
-
-        if (product.reason === "NOT_OWNER") {
-            return res.status(403).json({
-                message: "Forbidden! not product owner",
             });
         }
 

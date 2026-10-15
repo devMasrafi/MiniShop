@@ -1,21 +1,14 @@
 const Product = require("../models/Product");
 
-// Find a product and check whether it belongs to the requesting user.
+// Find a product helper.
 
-const findOwnedProduct = async (productId, userId) => {
+const findOwnedProduct = async (productId) => {
     const product = await Product.findById(productId);
 
     if (!product) {
         return {
             success: false,
-            reason: "NOT_FOUND",
-        };
-    }
-
-    if (product.owner.toString() !== userId) {
-        return {
-            success: false,
-            reason: "NOT_OWNER",
+            reason: "NOT FOUND",
         };
     }
 
@@ -166,22 +159,22 @@ const createProduct = async (body, userId) => {
     return Product.create(newProduct);
 };
 
-// Update a product after checking ownership.
-const updateProduct = async (productId, body, userId) => {
-    const product = await findOwnedProduct(productId, userId);
+// Update a product after finding.
+const updateProduct = async (productId, body) => {
+    const product = await findOwnedProduct(productId);
 
     if (product.success === false) {
         return product;
     }
 
     return Product.findByIdAndUpdate(productId, body, {
-        new: true,
+        returnDocument: "after",
     });
 };
 
-// Delete a product after checking ownership.
-const deleteProduct = async (productId, userId) => {
-    const product = await findOwnedProduct(productId, userId);
+// Delete a product after finding.
+const deleteProduct = async (productId) => {
+    const product = await findOwnedProduct(productId);
 
     if (product.success === false) {
         return product;
