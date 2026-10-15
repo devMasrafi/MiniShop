@@ -154,8 +154,9 @@ const createProduct = async (body, userId) => {
         description: body.description,
         category: body.category,
         owner: userId,
+        brand: body.brand,
+        variants: body.variants,
     };
-
     return Product.create(newProduct);
 };
 
