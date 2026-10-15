@@ -99,7 +99,7 @@ const updateProduct = async (req, res, next) => {
             req.body,
         );
 
-        if (product.reason === "NOT_FOUND") {
+        if (product.reason === "NOT FOUND") {
             return res.status(404).json({
                 success: false,
                 message: "Update failed, Product not found",
@@ -122,7 +122,7 @@ const deleteProduct = async (req, res, next) => {
     try {
         const product = await productService.deleteProduct(req.params.id);
 
-        if (product.reason === "NOT_FOUND") {
+        if (product.reason === "NOT FOUND") {
             return res.status(404).json({
                 message: "Product Not Found!",
             });
