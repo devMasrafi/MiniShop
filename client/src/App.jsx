@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import AuthPage from './pages/AuthPage'
 import Products from './pages/Products'
 import ForgotPass from './component/AuthComponents/ForgotPass'
+import Dashboard from './pages/Dashboard'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           </Route>
 
           <Route path="/auth" element={<AuthPage />} />
+          <Route path='/dashboard' element={<Dashboard/>} />
           <Route path="/forgotpass" element={<ForgotPass />} />
         </Routes>
       </BrowserRouter>

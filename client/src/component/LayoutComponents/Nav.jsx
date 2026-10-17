@@ -20,7 +20,9 @@ const Nav = () => {
       return setLoginstatus(true)
     }
     checktoken()
-  }, [logedInUser])
+  }, [])
+
+  console.log(logedInUser)
 
   return (
     <main className="text-md mx-auto max-w-6xl py-4">
@@ -38,8 +40,9 @@ const Nav = () => {
               {loginStatus ? (
                 // go to dashboard
 
-                <Link to={'/ownerdash'} className="flex items-center gap-x-2">
-                  <FaRegUserCircle /> me
+                <Link to={'/dashboard'} className="flex items-center gap-x-2">
+                  <FaRegUserCircle />{' '}
+                  <span className="capitalize">{logedInUser.name}</span>
                 </Link>
               ) : (
                 // not signed in go to AuthPage
