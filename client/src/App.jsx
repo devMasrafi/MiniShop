@@ -25,14 +25,14 @@ function App() {
             <Route path="/products/:id" element={<ProductDetails />} />
           </Route>
 
-          <Route element={<DashboardLayout />}>
-            <Route path="/overview" element={<OverView />} />
-            <Route path="/dashproducts" element={<DashProduct />} />
-            <Route path="/productlistings" element={<ProductListings />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/promotions" element={<Promotions />} />
-            <Route path="/profilesettings" element={<ProfileSettings />} />
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route path="overview" element={<OverView />} />
+            <Route path="products" element={<DashProduct />} />
+            <Route path="product-listings" element={<ProductListings />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="inventory" element={<Inventory />} />
+            <Route path="promotions" element={<Promotions />} />
+            <Route path="profile-settings" element={<ProfileSettings />} />
           </Route>
 
           <Route path="/auth" element={<AuthPage />} />

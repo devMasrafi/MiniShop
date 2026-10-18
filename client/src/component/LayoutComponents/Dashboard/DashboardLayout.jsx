@@ -14,9 +14,11 @@ const DashboardLayout = () => {
 
         <nav>
           <ul className="flex list-inside list-disc items-center gap-x-4">
-            <li className="px-3 py-1">Notification</li>
+            <li className="px-3 py-1">Check Calendar</li>
             <li className="px-3 py-1">Upcoming Events</li>
-            <li className="rounded-2xl border px-3 py-1">Check Calendar</li>
+            <li className="rounded-2xl border px-3 py-1">
+              <Link to="/products">Back To Shop</Link>
+            </li>
           </ul>
         </nav>
       </header>
