@@ -40,7 +40,7 @@ const Nav = () => {
               {loginStatus ? (
                 // go to dashboard
 
-                <Link to={'/dashboard'} className="flex items-center gap-x-2">
+                <Link to={'/overview'} className="flex items-center gap-x-2">
                   <FaRegUserCircle />{' '}
                   <span className="capitalize">{logedInUser.name}</span>
                 </Link>

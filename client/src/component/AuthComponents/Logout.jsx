@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router'
+import { RxExit } from 'react-icons/rx'
 
-const Logout = () => {
+const Logout = ({ className }) => {
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -11,8 +12,11 @@ const Logout = () => {
 
   return (
     <div>
-      <button className="bg-amber-300 px-5 py-2" onClick={() => handleLogout()}>
-        Logout
+      <button
+        className={`flex flex-1 cursor-pointer items-center gap-x-2 ${className}`}
+        onClick={() => handleLogout()}
+      >
+        Logout <RxExit />
       </button>
     </div>
   )
