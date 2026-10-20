@@ -26,6 +26,7 @@ function App() {
           </Route>
 
           <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<OverView />} />
             <Route path="overview" element={<OverView />} />
             <Route path="products" element={<DashProduct />} />
             <Route path="product-listings" element={<ProductListings />} />

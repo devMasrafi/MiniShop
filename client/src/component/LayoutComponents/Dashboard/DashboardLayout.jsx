@@ -8,7 +8,7 @@ const DashboardLayout = () => {
       <header className="border-border flex shrink-0 items-center justify-between border-b-2 px-4 py-3">
         <div>
           <h2>
-            <Link to={'/overview'}>LOGO</Link>
+            <Link to="/dashboard/overview">LOGO</Link>
           </h2>
         </div>
 
