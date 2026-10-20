@@ -113,7 +113,7 @@ const getProducts = async (
     query.skip(skip);
     query.limit(limit);
 
-    const products = await query.populate("owner", "-password");
+    const products = await query;
 
     // Count matching products for pagination.
     const totalProducts = await Product.countDocuments(filter);
@@ -134,7 +134,7 @@ const getProductById = async (id) => {
         return null;
     }
 
-    return product.populate("owner", "-password");
+    return product;
 };
 
 // Get products belonging to a specific user.
@@ -162,15 +162,42 @@ const createProduct = async (body, userId) => {
 
 // Update a product after finding.
 const updateProduct = async (productId, body) => {
-    const product = await findOwnedProduct(productId);
+    const allowedFields = [
+        "name",
+        "price",
+        "description",
+        "category",
+        "brand",
+        "variants",
+    ];
 
-    if (product.success === false) {
-        return product;
+    const updates = {};
+
+    for (const field of allowedFields) {
+        if (Object.prototype.hasOwnProperty.call(body, field)) {
+            updates[field] = body[field];
+        }
     }
 
-    return Product.findByIdAndUpdate(productId, body, {
-        returnDocument: "after",
+    if (Object.keys(updates).length === 0) {
+        const error = new Error("No valid product fields provided");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const product = await Product.findByIdAndUpdate(productId, updates, {
+        new: true,
+        runValidators: true,
     });
+
+    if (!product) {
+        return {
+            success: false,
+            reason: "NOT FOUND",
+        };
+    }
+
+    return product;
 };
 
 // Delete a product after finding.

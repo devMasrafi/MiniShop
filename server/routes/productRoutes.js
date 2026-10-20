@@ -1,5 +1,6 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/authMiddleware");
+const authorizeRoles = require("../middlewares/authorizeRoles");
 
 const {
     getProducts,
@@ -21,12 +22,28 @@ router.get("/products", getProducts);
 
 router.get("/products/:id", getProductById);
 
-router.post("/products", authMiddleware, ownerMiddleware, createProduct);
-
-router.put("/products/:id", authMiddleware, ownerMiddleware, updateProduct);
-
-router.delete("/products/:id", authMiddleware, ownerMiddleware, deleteProduct);
-
-router.get("/my-products", authMiddleware, ownerMiddleware, getMyProducts);
-
+router.post(
+    "/products",
+    authMiddleware,
+    authorizeRoles("admin", "employee"),
+    createProduct,
+);
+router.put(
+    "/products/:id",
+    authMiddleware,
+    authorizeRoles("admin", "employee"),
+    updateProduct,
+);
+router.delete(
+    "/products/:id",
+    authMiddleware,
+    authorizeRoles("admin", "employee"),
+    deleteProduct,
+);
+router.get(
+    "/my-products",
+    authMiddleware,
+    authorizeRoles("admin", "employee"),
+    getMyProducts,
+);
 module.exports = router;
