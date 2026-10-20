@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 // import { useNavigate } from "react-router";
 
 import { FaSearch } from 'react-icons/fa'
-import ProductCard from '../component/productComponents/ProductCard'
+import ProductCard from '../component/CardComponents/ProductCard'
 
 const Products = () => {
   const categoryData = [

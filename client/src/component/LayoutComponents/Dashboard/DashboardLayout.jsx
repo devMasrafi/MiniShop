@@ -5,7 +5,7 @@ const DashboardLayout = () => {
   return (
     <main className="flex h-screen flex-col overflow-hidden">
       {/* Top Navbar */}
-      <header className="border-border flex shrink-0 items-center justify-between border-b-2 px-4 py-3">
+      <header className="border-border bg-canvas flex shrink-0 items-center justify-between border-b-2 px-4 py-3">
         <div>
           <h2>
             <Link to="/dashboard/overview">LOGO</Link>

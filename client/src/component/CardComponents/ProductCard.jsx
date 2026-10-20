@@ -8,7 +8,8 @@ const ProductCard = ({ product, className }) => {
       onClick={() => navigate(`/products/${product._id}`)}
     >
       <div>
-        <img className='w-53 h-50 mb-2'
+        <img
+          className="mb-2 h-50 w-53"
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS72UbY52iLq25DVzt-BFGrEEbfGWAFEy3GSQmdOltFe1-0xCFnp1xSo8gn&s=10"
           alt="products-in-woven-basket"
         />
@@ -17,7 +18,7 @@ const ProductCard = ({ product, className }) => {
         <div>
           <h2>{product.name}</h2>
           <h1 className="text-2xl font-medium">${product.price}</h1>
-          <p className='text-gray-600/50'>{product.description}</p>
+          <p className="text-gray-600/50">{product.description}</p>
         </div>
         <div className="flex justify-between text-sm">
           <h2 className="uppercase">on sale</h2>

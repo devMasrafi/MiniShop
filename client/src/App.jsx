@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from 'react-router'
-import ProductDetails from './component/productComponents/ProductDetails'
 import MainLayout from './component/LayoutComponents/Main/MainLayout'
 import Home from './pages/Home'
 import AuthPage from './pages/AuthPage'
@@ -13,6 +12,7 @@ import Orders from './pages/DashboardPages/Orders'
 import Inventory from './pages/DashboardPages/Inventory'
 import Promotions from './pages/DashboardPages/Promotions'
 import ProfileSettings from './pages/DashboardPages/ProfileSettings'
+import ProductDetails from './pages/ProductDetails'
 
 function App() {
   return (
