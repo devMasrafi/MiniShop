@@ -1,5 +1,3 @@
-console.log("loaded: ourderROutes")
-
 const express = require("express");
 const router = express.Router();
 
@@ -33,7 +31,6 @@ router.get(
 router.get(
     "/orders",
     (req, res, next) => {
-        console.log("HIT: STAFF GET /orders");
         next();
     },
     authorizeRoles("employee", "admin"),
