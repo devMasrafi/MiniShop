@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const validateID = require("../utils/vallidId");
 
 // Find a product helper.
 
@@ -128,6 +129,7 @@ const getProducts = async (
 
 // Get one product by its ID.
 const getProductById = async (id) => {
+    validateID(id);
     const product = await Product.findById(id);
 
     if (!product) {
@@ -162,6 +164,8 @@ const createProduct = async (body, userId) => {
 
 // Update a product after finding.
 const updateProduct = async (productId, body) => {
+    validateID(productId);
+
     const allowedFields = [
         "name",
         "price",
@@ -202,6 +206,8 @@ const updateProduct = async (productId, body) => {
 
 // Delete a product after finding.
 const deleteProduct = async (productId) => {
+    validateID(productId);
+
     const product = await findOwnedProduct(productId);
 
     if (product.success === false) {

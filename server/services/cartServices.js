@@ -1,13 +1,12 @@
 const mongoose = require("mongoose");
 const Cart = require("../models/cart");
 const Product = require("../models/Product");
-
-const isValidId = (id) => mongoose.isValidObjectId(id);
+const validateID = require("../utils/vallidId");
 
 const addToCart = async (userId, productId, variantId, quantity) => {
-    if (!isValidId(userId) || !isValidId(productId) || !isValidId(variantId)) {
-        return { error: "INVALID_ID" };
-    }
+    validateID(userId);
+    validateID(productId);
+    validateID(variantId);
 
     if (!Number.isInteger(quantity) || quantity < 1) {
         return { error: "INVALID_QUANTITY" };
@@ -61,9 +60,7 @@ const addToCart = async (userId, productId, variantId, quantity) => {
 };
 
 const getCart = async (userId) => {
-    if (!isValidId(userId)) {
-        return { error: "INVALID_ID" };
-    }
+    validateID(userId);
 
     const cart = await Cart.findOne({ user: userId }).populate({
         path: "items.product",
@@ -83,9 +80,8 @@ const getCart = async (userId) => {
 };
 
 const updateCartItem = async (userId, itemId, quantity) => {
-    if (!isValidId(userId) || !isValidId(itemId)) {
-        return { error: "INVALID_ID" };
-    }
+    validateID(userId);
+    validateID(itemId);
 
     if (!Number.isInteger(quantity) || quantity < 1) {
         return { error: "INVALID_QUANTITY" };
@@ -127,9 +123,8 @@ const updateCartItem = async (userId, itemId, quantity) => {
 };
 
 const removeCartItem = async (userId, itemId) => {
-    if (!isValidId(userId) || !isValidId(itemId)) {
-        return { error: "INVALID_ID" };
-    }
+    validateID(userId);
+    validateID(itemId);
 
     const cart = await Cart.findOne({ user: userId });
 

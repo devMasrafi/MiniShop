@@ -5,13 +5,6 @@ const authorizeRoles = (...allowedRoles) => {
         try {
             const user = await User.findById(req.user.userId).select("role");
 
-            console.log({
-                tokenUserId: req.user.userId,
-                databaseUserId: user?._id?.toString(),
-                databaseRole: user?.role,
-                allowedRoles,
-            });
-
             if (!user) {
                 return res.status(401).json({
                     success: false,
