@@ -1,65 +1,97 @@
+
 import { useState } from 'react'
-import { FaFacebook, FaGoogle } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router'
 
-const Login = () => {
+const Login = ({ successMessage = '' }) => {
   const [userEmail, setUserEmail] = useState('')
   const [userPassword, setUserPassword] = useState('')
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    const data = {
-      email: userEmail,
-      password: userPassword,
-    }
+    setIsSubmitting(true)
 
-    const loginReq = async () => {
-      try {
-        const loginRes = await fetch('http://localhost:5000/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    try {
+      const loginRes = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userEmail.trim(),
+          password: userPassword,
+        }),
+      })
 
-          body: JSON.stringify(data),
-        })
-        const result = await loginRes.json()
+      const result = await loginRes.json().catch(() => ({}))
 
-        // console.log(result)
-        if (!loginRes.ok) {
-          throw new Error(result.message)
-        }
-
-        // console.log(result)
-
-        // console.log(typeof result.jwtToken)
-        localStorage.setItem('token', result.jwtToken)
-        navigate('/products')
-      } catch (error) {
-        setError(error.message)
+      if (!loginRes.ok) {
+        throw new Error(result.message || 'Unable to log in. Please try again.')
       }
+
+      if (!result.jwtToken) {
+        throw new Error('The server did not return an authentication token.')
+      }
+
+      localStorage.setItem('token', result.jwtToken)
+      navigate('/products')
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
-    loginReq()
   }
 
   return (
-    <>
-      <div>
-        <p className="text-center text-lg text-red-400 capitalize">
-          {error !== '' ? `${error}` : ''}
+    <div className="w-full">
+      <div className="mb-6">
+        <p className="text-sm font-medium text-ascent">WELCOME BACK</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-inc">
+          Log in to MiniShop
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-muted">
+          Sign in to continue shopping and manage your account.
         </p>
       </div>
-      <form onSubmit={handleSubmit}>
-        <div className="px-2 py-3">
-          <p className="capitalize">User Email</p>
+
+      {successMessage && (
+        <p
+          role="status"
+          className="mb-4 rounded-lg border border-success/20 bg-success/5 px-4 py-3 text-sm text-success"
+        >
+          {successMessage}
+        </p>
+      )}
+
+      {error && (
+        <p
+          role="alert"
+          className="mb-4 rounded-lg border border-error/20 bg-error/5 px-4 py-3 text-sm text-error"
+        >
+          {error}
+        </p>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div>
+          <label
+            htmlFor="login-email"
+            className="mb-2 block text-sm font-medium text-inc"
+          >
+            Email address
+          </label>
           <input
+            id="login-email"
+            name="email"
             type="email"
-            placeholder="(eg. johns@mail.com)"
-            className="w-full border-b px-2 py-1 outline-none"
+            autoComplete="email"
+            required
+            placeholder="you@example.com"
+            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition placeholder:text-muted/70 focus:border-ascent focus:ring-2 focus:ring-ascent/10"
             value={userEmail}
             onChange={(e) => {
               setUserEmail(e.target.value)
@@ -67,12 +99,31 @@ const Login = () => {
             }}
           />
         </div>
-        <div className="mt-2 px-2 py-3">
-          <p className="capitalize">password</p>
+
+        <div>
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <label
+              htmlFor="login-password"
+              className="text-sm font-medium text-inc"
+            >
+              Password
+            </label>
+            <Link
+              to="/forgotpass"
+              className="text-xs font-medium text-ascent hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
           <input
+            id="login-password"
+            name="password"
             type="password"
+            autoComplete="current-password"
+            required
             placeholder="Enter your password"
-            className="w-full border-b px-2 py-1 outline-none"
+            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition placeholder:text-muted/70 focus:border-ascent focus:ring-2 focus:ring-ascent/10"
             value={userPassword}
             onChange={(e) => {
               setUserPassword(e.target.value)
@@ -80,27 +131,23 @@ const Login = () => {
             }}
           />
         </div>
-        <div className="flex items-center justify-between">
-          <button className="cursor-pointer rounded-xl border px-8 py-1">
-            login
-          </button>
-          <Link to={'/forgotpass'}>
-            <h2 className="capitalize">forgot password?</h2>
-          </Link>
-        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="mt-1 rounded-xl bg-ascent px-5 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isSubmitting ? 'Logging in...' : 'Log in'}
+        </button>
       </form>
 
-      <div className="my-7">
-        <div className="flex flex-col items-center justify-center gap-y-3">
-          <button className="flex cursor-pointer items-center gap-x-2 rounded-xl border px-8 py-1 capitalize">
-            <FaGoogle /> login with google
-          </button>
-          <button className="flex cursor-pointer items-center gap-x-2 rounded-xl border px-8 py-1 capitalize">
-            <FaFacebook /> login with facebook
-          </button>
-        </div>
-      </div>
-    </>
+      <p className="mt-6 text-center text-sm text-muted">
+        Your first time here?{' '}
+        <span className="font-medium text-inc">
+          Choose Sign up above to create an account.
+        </span>
+      </p>
+    </div>
   )
 }
 

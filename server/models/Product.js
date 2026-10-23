@@ -20,6 +20,8 @@ const productSchema = mongoose.Schema(
         category: {
             type: String,
             required: true,
+            trim: true,
+            lowercase: true,
         },
 
         variants: [

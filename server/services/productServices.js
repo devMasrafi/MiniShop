@@ -150,15 +150,53 @@ const getMyProducts = async (userId) => {
 
 // Create a product for the requesting user.
 const createProduct = async (body, userId) => {
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+        const error = new Error("A valid product body is required.");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const name = typeof body.name === "string" ? body.name.trim() : "";
+
+    const category =
+        typeof body.category === "string"
+            ? body.category.trim().toLowerCase()
+            : "";
+
+    const price =
+        typeof body.price === "number" ||
+        (typeof body.price === "string" && body.price.trim() !== "")
+            ? Number(body.price)
+            : NaN;
+
+    if (!name) {
+        const error = new Error("Product name is required.");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    if (!category) {
+        const error = new Error("Product category is required.");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    if (!Number.isFinite(price) || price < 0) {
+        const error = new Error("Price must be a valid non-negative number.");
+        error.statusCode = 400;
+        throw error;
+    }
+
     const newProduct = {
-        name: body.name,
-        price: body.price,
+        name,
+        price,
         description: body.description,
-        category: body.category,
+        category,
         owner: userId,
         brand: body.brand,
         variants: body.variants,
     };
+
     return Product.create(newProduct);
 };
 

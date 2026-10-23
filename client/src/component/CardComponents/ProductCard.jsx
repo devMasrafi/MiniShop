@@ -1,31 +1,86 @@
-import { useNavigate } from 'react-router'
 
-const ProductCard = ({ product, className }) => {
+import { useNavigate } from 'react-router'
+import { FaBoxOpen, FaArrowRight } from 'react-icons/fa'
+
+const ProductCard = ({ product, className = '' }) => {
   const navigate = useNavigate()
+
+  const imageUrl = product.imageUrl || product.image
+  const stock = Array.isArray(product.variants)
+    ? product.variants.reduce(
+        (total, variant) => total + (Number(variant.stock) || 0),
+        0
+      )
+    : Number(product.stock) || 0
+
+  const openProduct = () => {
+    navigate(`/products/${product._id}`)
+  }
+
   return (
-    <div
-      className={`${className} h-100 w-55 cursor-pointer rounded-md border px-2 py-4`}
-      onClick={() => navigate(`/products/${product._id}`)}
+    <article
+      className={`group flex min-w-0 flex-1 basis-56 flex-col overflow-hidden rounded-xl border border-border bg-white transition duration-200 hover:-translate-y-1 hover:shadow-lg ${className}`}
     >
-      <div>
-        <img
-          className="mb-2 h-50 w-53"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS72UbY52iLq25DVzt-BFGrEEbfGWAFEy3GSQmdOltFe1-0xCFnp1xSo8gn&s=10"
-          alt="products-in-woven-basket"
-        />
-      </div>
-      <div className="flex h-40 w-full flex-col justify-between">
-        <div>
-          <h2>{product.name}</h2>
-          <h1 className="text-2xl font-medium">${product.price}</h1>
-          <p className="text-gray-600/50">{product.description}</p>
+      <button
+        type="button"
+        onClick={openProduct}
+        className="flex aspect-square w-full items-center justify-center overflow-hidden bg-canvas text-muted"
+        aria-label={`View ${product.name}`}
+      >
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={product.name}
+            loading="lazy"
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-canvas">
+            <FaBoxOpen className="text-4xl text-ascent/50" />
+            <span className="text-sm">Product image coming soon</span>
+          </div>
+        )}
+      </button>
+
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <div className="min-w-0">
+          <p className="mb-1 text-xs uppercase tracking-wider text-muted">
+            {product.brand || product.category || 'MiniShop'}
+          </p>
+
+          <h2 className="truncate font-semibold text-inc">
+            {product.name}
+          </h2>
+
+          <p className="mt-2 text-xl font-semibold text-inc">
+            ${Number(product.price || 0).toFixed(2)}
+          </p>
+
+          <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted">
+            {product.description || 'Discover more about this product.'}
+          </p>
         </div>
-        <div className="flex justify-between text-sm">
-          <h2 className="uppercase">on sale</h2>
-          <h2 className="">Stock: 25</h2>
+
+        <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-3">
+          <span
+            className={`text-xs font-medium ${
+              stock > 0 ? 'text-success' : 'text-error'
+            }`}
+          >
+            {stock > 0 ? `${stock} in stock` : 'Out of stock'}
+          </span>
+
+          <button
+            type="button"
+            onClick={openProduct}
+            className="flex items-center gap-2 rounded-lg bg-ascent px-3 py-2 text-sm font-medium text-white transition hover:opacity-90"
+          >
+            View
+            <FaArrowRight />
+          </button>
         </div>
       </div>
-    </div>
+    </article>
   )
 }
 
