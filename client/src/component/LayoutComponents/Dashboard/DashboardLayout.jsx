@@ -1,7 +1,28 @@
-import { Link, Outlet } from 'react-router'
+/* eslint-disable no-unused-vars */
+import { Link, Navigate, Outlet } from 'react-router'
 import DashboardSidebar from './DashboardSidebar'
+import { jwtDecode } from 'jwt-decode'
 
 const DashboardLayout = () => {
+  const token = localStorage.getItem('token')
+
+  if (!token) {
+    return <Navigate to="/auth" replace />
+  }
+
+  let userData
+
+  try {
+    userData = jwtDecode(token)
+  } catch (error) {
+    localStorage.removeItem('token')
+    return <Navigate to="/auth" replace />
+  }
+
+  if (userData.role !== 'admin' && userData.role !== 'employee') {
+    return <Navigate to="/products" replace />
+  }
+
   return (
     <main className="flex h-screen flex-col overflow-hidden">
       {/* Top Navbar */}
@@ -24,13 +45,13 @@ const DashboardLayout = () => {
       </header>
 
       {/* Sidebar + Dashboard Content */}
-      <div className="flex flex-1">
-        <aside className="w-64 overflow-y-auto">
-          <DashboardSidebar />
+      <div className="flex flex-1 overflow-hidden">
+        <aside className="w-64 shrink-0 overflow-y-auto">
+          <DashboardSidebar userData={userData} />
         </aside>
 
         <section className="flex-1 overflow-y-auto p-4">
-          <Outlet />
+          <Outlet context={userData} />
         </section>
       </div>
     </main>

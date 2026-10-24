@@ -2,12 +2,17 @@ import MetricCard from '../../component/CardComponents/MetricCard'
 import { IoWalletOutline } from 'react-icons/io5'
 import { FiShoppingBag } from 'react-icons/fi'
 import { CiTimer } from 'react-icons/ci'
+import { useOutletContext } from 'react-router'
 
 const OverView = () => {
+  const userData = useOutletContext()
+
   return (
     <main className="flex flex-col gap-6">
       <section>
-        <h1 className="text-inc text-2xl font-semibold">Welcome, User</h1>
+        <h1 className="text-inc text-2xl font-semibold capitalize">
+          Welcome, {userData.name}{' '}
+        </h1>
         <p className="text-inc/50 mt-1 text-sm">
           Here's how your store is performing.
         </p>
