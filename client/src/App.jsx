@@ -6,13 +6,13 @@ import Products from './pages/Products'
 import ForgotPass from './component/AuthComponents/ForgotPass'
 import OverView from './pages/DashboardPages/OverView'
 import DashboardLayout from './component/LayoutComponents/Dashboard/DashboardLayout'
-import DashProduct from './pages/DashboardPages/DashProducts'
-import ProductListings from './pages/DashboardPages/ProductListings'
+import Product from './pages/DashboardPages/Product'
 import Orders from './pages/DashboardPages/Orders'
-import Inventory from './pages/DashboardPages/Inventory'
-import Promotions from './pages/DashboardPages/Promotions'
+import Users from './pages/DashboardPages/Users'
 import ProfileSettings from './pages/DashboardPages/ProfileSettings'
 import ProductDetails from './pages/ProductDetails'
+import DashboardHome from './component/LayoutComponents/Dashboard/DashboardHome'
+import RequireRole from './utils/requiredRole'
 
 function App() {
   return (
@@ -26,14 +26,15 @@ function App() {
           </Route>
 
           <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<OverView />} />
-            <Route path="overview" element={<OverView />} />
-            <Route path="products" element={<DashProduct />} />
-            <Route path="product-listings" element={<ProductListings />} />
+            <Route index element={<DashboardHome />} />
             <Route path="orders" element={<Orders />} />
-            <Route path="inventory" element={<Inventory />} />
-            <Route path="promotions" element={<Promotions />} />
+            <Route path="products" element={<Product />} />
             <Route path="profile-settings" element={<ProfileSettings />} />
+
+            <Route element={<RequireRole roles={['admin']} />}>
+              <Route path="overview" element={<OverView />} />
+              <Route path="users" element={<Users />} />
+            </Route>
           </Route>
 
           <Route path="/auth" element={<AuthPage />} />

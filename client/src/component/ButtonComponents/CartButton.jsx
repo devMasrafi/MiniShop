@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { jwtDecode } from 'jwt-decode'
 import { IoMdClose } from 'react-icons/io'
 import { FiShoppingBag } from 'react-icons/fi'
-import { apiFetch } from '../../api'
+import { apiFetch } from '../../utils/api'
 
 const formatPrice = (amount) => `$${Number(amount || 0).toFixed(2)}`
 
@@ -16,7 +16,7 @@ const CartButton = () => {
   const navigate = useNavigate()
 
   const [isOpen, setIsOpen] = useState(false)
-  const [view, setView] = useState('cart') 
+  const [view, setView] = useState('cart')
 
   // Cart
   const [items, setItems] = useState([])

@@ -1,26 +1,17 @@
-/* eslint-disable no-unused-vars */
 import { Link, Navigate, Outlet } from 'react-router'
 import DashboardSidebar from './DashboardSidebar'
-import { jwtDecode } from 'jwt-decode'
+import { getUser, isStaff } from '../../../utils/auth'
+
 
 const DashboardLayout = () => {
-  const token = localStorage.getItem('token')
+  const userData = getUser()
 
-  if (!token) {
+  if (!userData) {
     return <Navigate to="/auth" replace />
   }
 
-  let userData
-
-  try {
-    userData = jwtDecode(token)
-  } catch (error) {
-    localStorage.removeItem('token')
-    return <Navigate to="/auth" replace />
-  }
-
-  if (userData.role !== 'admin' && userData.role !== 'employee') {
-    return <Navigate to="/dashboard" replace />
+  if (!isStaff(userData)) {
+    return <Navigate to="/products" replace />
   }
 
   return (
@@ -29,7 +20,7 @@ const DashboardLayout = () => {
       <header className="border-border bg-canvas flex shrink-0 items-center justify-between border-b-2 px-4 py-3">
         <div>
           <h2>
-            <Link to="/dashboard/overview">LOGO</Link>
+            <Link to="/dashboard/orders">LOGO</Link>
           </h2>
         </div>
 

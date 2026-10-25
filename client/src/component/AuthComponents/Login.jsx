@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { apiFetch } from '../../api'
+import { apiFetch } from '../../utils/api'
+import { getUser, isStaff } from '../../utils/auth'
 
 const Login = ({ successMessage = '' }) => {
   const [userEmail, setUserEmail] = useState('')
@@ -29,7 +30,8 @@ const Login = ({ successMessage = '' }) => {
       }
 
       localStorage.setItem('token', result.jwtToken)
-      navigate('/products')
+
+      navigate(isStaff(getUser()) ? '/dashboard' : '/products')
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
     } finally {

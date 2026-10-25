@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { FaArrowLeft, FaBoxOpen, FaCheckCircle } from 'react-icons/fa'
-import { apiFetch } from '../api'
+import { apiFetch } from '../utils/api'
 
 const ProductDetails = () => {
   const { id } = useParams()

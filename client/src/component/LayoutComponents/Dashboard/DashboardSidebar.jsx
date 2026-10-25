@@ -5,15 +5,13 @@ const DashboardSidebar = ({ userData }) => {
   return (
     <main className="bg-canvas h-full w-64 px-5 py-3">
       <div className="flex flex-col gap-y-3 text-lg capitalize">
-        <Link to="/dashboard/overview">Overview</Link>
-        <Link to="/dashboard/inventory">Inventory</Link>
+        {userData.role === 'admin' && (
+          <Link to="/dashboard/overview">Overview</Link>
+        )}
         <Link to="/dashboard/orders">Orders</Link>
         <Link to="/dashboard/products">Products</Link>
-        <Link to="/dashboard/product-listings">Product Listings</Link>
 
-        {userData.role === 'admin' && (
-          <Link to="/dashboard/promotions">Promotions</Link>
-        )}
+        {userData.role === 'admin' && <Link to="/dashboard/users">Users</Link>}
 
         <Link to="/dashboard/profile-settings">Profile Settings</Link>
 

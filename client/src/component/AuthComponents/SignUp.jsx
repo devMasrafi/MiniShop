@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState } from 'react'
-import { apiFetch } from '../../api'
+import { apiFetch } from '../../utils/api'
 
 const SignUp = ({ onSignupSuccess }) => {
   const [userName, setUserName] = useState('')
