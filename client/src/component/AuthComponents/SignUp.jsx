@@ -1,5 +1,6 @@
-
+/* eslint-disable no-unused-vars */
 import { useState } from 'react'
+import { apiFetch } from '../../api'
 
 const SignUp = ({ onSignupSuccess }) => {
   const [userName, setUserName] = useState('')
@@ -26,23 +27,14 @@ const SignUp = ({ onSignupSuccess }) => {
     setIsSubmitting(true)
 
     try {
-      const signUp = await fetch('http://localhost:5000/register', {
+      const result = await apiFetch('/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           name: userName.trim(),
           email: userEmail.trim(),
           password: userPassword,
         }),
       })
-
-      const result = await signUp.json().catch(() => ({}))
-
-      if (!signUp.ok) {
-        throw new Error(result.message || 'Unable to create your account.')
-      }
 
       onSignupSuccess()
     } catch (err) {
@@ -55,11 +47,11 @@ const SignUp = ({ onSignupSuccess }) => {
   return (
     <div className="w-full">
       <div className="mb-6">
-        <p className="text-sm font-medium text-ascent">JOIN MINISHOP</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-inc">
+        <p className="text-ascent text-sm font-medium">JOIN MINISHOP</p>
+        <h1 className="text-inc mt-2 text-3xl font-bold tracking-tight">
           Create your account
         </h1>
-        <p className="mt-2 text-sm leading-6 text-muted">
+        <p className="text-muted mt-2 text-sm leading-6">
           Set up your account to get started.
         </p>
       </div>
@@ -67,7 +59,7 @@ const SignUp = ({ onSignupSuccess }) => {
       {error && (
         <p
           role="alert"
-          className="mb-4 rounded-lg border border-error/20 bg-error/5 px-4 py-3 text-sm text-error"
+          className="border-error/20 bg-error/5 text-error mb-4 rounded-lg border px-4 py-3 text-sm"
         >
           {error}
         </p>
@@ -77,7 +69,7 @@ const SignUp = ({ onSignupSuccess }) => {
         <div>
           <label
             htmlFor="signup-name"
-            className="mb-2 block text-sm font-medium text-inc"
+            className="text-inc mb-2 block text-sm font-medium"
           >
             Your name
           </label>
@@ -89,7 +81,7 @@ const SignUp = ({ onSignupSuccess }) => {
             required
             maxLength={80}
             placeholder="Your name"
-            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition placeholder:text-muted/70 focus:border-ascent focus:ring-2 focus:ring-ascent/10"
+            className="border-border placeholder:text-muted/70 focus:border-ascent focus:ring-ascent/10 w-full rounded-xl border bg-white px-4 py-3 text-sm transition outline-none focus:ring-2"
             value={userName}
             onChange={(e) => {
               setUserName(e.target.value)
@@ -101,7 +93,7 @@ const SignUp = ({ onSignupSuccess }) => {
         <div>
           <label
             htmlFor="signup-email"
-            className="mb-2 block text-sm font-medium text-inc"
+            className="text-inc mb-2 block text-sm font-medium"
           >
             Email address
           </label>
@@ -112,7 +104,7 @@ const SignUp = ({ onSignupSuccess }) => {
             autoComplete="email"
             required
             placeholder="you@example.com"
-            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition placeholder:text-muted/70 focus:border-ascent focus:ring-2 focus:ring-ascent/10"
+            className="border-border placeholder:text-muted/70 focus:border-ascent focus:ring-ascent/10 w-full rounded-xl border bg-white px-4 py-3 text-sm transition outline-none focus:ring-2"
             value={userEmail}
             onChange={(e) => {
               setUserEmail(e.target.value)
@@ -124,7 +116,7 @@ const SignUp = ({ onSignupSuccess }) => {
         <div>
           <label
             htmlFor="signup-password"
-            className="mb-2 block text-sm font-medium text-inc"
+            className="text-inc mb-2 block text-sm font-medium"
           >
             Password
           </label>
@@ -136,7 +128,7 @@ const SignUp = ({ onSignupSuccess }) => {
             required
             minLength={8}
             placeholder="At least 8 characters"
-            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition placeholder:text-muted/70 focus:border-ascent focus:ring-2 focus:ring-ascent/10"
+            className="border-border placeholder:text-muted/70 focus:border-ascent focus:ring-ascent/10 w-full rounded-xl border bg-white px-4 py-3 text-sm transition outline-none focus:ring-2"
             value={userPassword}
             onChange={(e) => {
               setUserPassword(e.target.value)
@@ -148,7 +140,7 @@ const SignUp = ({ onSignupSuccess }) => {
         <div>
           <label
             htmlFor="signup-confirm-password"
-            className="mb-2 block text-sm font-medium text-inc"
+            className="text-inc mb-2 block text-sm font-medium"
           >
             Confirm password
           </label>
@@ -160,7 +152,7 @@ const SignUp = ({ onSignupSuccess }) => {
             required
             minLength={8}
             placeholder="Enter your password again"
-            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition placeholder:text-muted/70 focus:border-ascent focus:ring-2 focus:ring-ascent/10"
+            className="border-border placeholder:text-muted/70 focus:border-ascent focus:ring-ascent/10 w-full rounded-xl border bg-white px-4 py-3 text-sm transition outline-none focus:ring-2"
             value={userConfirmPassword}
             onChange={(e) => {
               setUserConfirmPassword(e.target.value)
@@ -172,12 +164,12 @@ const SignUp = ({ onSignupSuccess }) => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-2 rounded-xl bg-ascent px-5 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="bg-ascent mt-2 rounded-xl px-5 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? 'Creating account...' : 'Create account'}
         </button>
 
-        <p className="text-center text-xs leading-5 text-muted">
+        <p className="text-muted text-center text-xs leading-5">
           By creating an account, you agree to follow the store's applicable
           terms and policies.
         </p>

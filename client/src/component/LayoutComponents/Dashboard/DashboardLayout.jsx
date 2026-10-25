@@ -20,7 +20,7 @@ const DashboardLayout = () => {
   }
 
   if (userData.role !== 'admin' && userData.role !== 'employee') {
-    return <Navigate to="/products" replace />
+    return <Navigate to="/dashboard" replace />
   }
 
   return (

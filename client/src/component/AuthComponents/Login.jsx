@@ -1,6 +1,6 @@
-
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
+import { apiFetch } from '../../api'
 
 const Login = ({ successMessage = '' }) => {
   const [userEmail, setUserEmail] = useState('')
@@ -16,22 +16,13 @@ const Login = ({ successMessage = '' }) => {
     setIsSubmitting(true)
 
     try {
-      const loginRes = await fetch('http://localhost:5000/login', {
+      const result = await apiFetch('/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           email: userEmail.trim(),
           password: userPassword,
         }),
       })
-
-      const result = await loginRes.json().catch(() => ({}))
-
-      if (!loginRes.ok) {
-        throw new Error(result.message || 'Unable to log in. Please try again.')
-      }
 
       if (!result.jwtToken) {
         throw new Error('The server did not return an authentication token.')
@@ -49,11 +40,11 @@ const Login = ({ successMessage = '' }) => {
   return (
     <div className="w-full">
       <div className="mb-6">
-        <p className="text-sm font-medium text-ascent">WELCOME BACK</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-inc">
+        <p className="text-ascent text-sm font-medium">WELCOME BACK</p>
+        <h1 className="text-inc mt-2 text-3xl font-bold tracking-tight">
           Log in to MiniShop
         </h1>
-        <p className="mt-2 text-sm leading-6 text-muted">
+        <p className="text-muted mt-2 text-sm leading-6">
           Sign in to continue shopping and manage your account.
         </p>
       </div>
@@ -61,7 +52,7 @@ const Login = ({ successMessage = '' }) => {
       {successMessage && (
         <p
           role="status"
-          className="mb-4 rounded-lg border border-success/20 bg-success/5 px-4 py-3 text-sm text-success"
+          className="border-success/20 bg-success/5 text-success mb-4 rounded-lg border px-4 py-3 text-sm"
         >
           {successMessage}
         </p>
@@ -70,7 +61,7 @@ const Login = ({ successMessage = '' }) => {
       {error && (
         <p
           role="alert"
-          className="mb-4 rounded-lg border border-error/20 bg-error/5 px-4 py-3 text-sm text-error"
+          className="border-error/20 bg-error/5 text-error mb-4 rounded-lg border px-4 py-3 text-sm"
         >
           {error}
         </p>
@@ -80,7 +71,7 @@ const Login = ({ successMessage = '' }) => {
         <div>
           <label
             htmlFor="login-email"
-            className="mb-2 block text-sm font-medium text-inc"
+            className="text-inc mb-2 block text-sm font-medium"
           >
             Email address
           </label>
@@ -91,7 +82,7 @@ const Login = ({ successMessage = '' }) => {
             autoComplete="email"
             required
             placeholder="you@example.com"
-            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition placeholder:text-muted/70 focus:border-ascent focus:ring-2 focus:ring-ascent/10"
+            className="border-border placeholder:text-muted/70 focus:border-ascent focus:ring-ascent/10 w-full rounded-xl border bg-white px-4 py-3 text-sm transition outline-none focus:ring-2"
             value={userEmail}
             onChange={(e) => {
               setUserEmail(e.target.value)
@@ -104,13 +95,13 @@ const Login = ({ successMessage = '' }) => {
           <div className="mb-2 flex items-center justify-between gap-3">
             <label
               htmlFor="login-password"
-              className="text-sm font-medium text-inc"
+              className="text-inc text-sm font-medium"
             >
               Password
             </label>
             <Link
               to="/forgotpass"
-              className="text-xs font-medium text-ascent hover:underline"
+              className="text-ascent text-xs font-medium hover:underline"
             >
               Forgot password?
             </Link>
@@ -123,7 +114,7 @@ const Login = ({ successMessage = '' }) => {
             autoComplete="current-password"
             required
             placeholder="Enter your password"
-            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none transition placeholder:text-muted/70 focus:border-ascent focus:ring-2 focus:ring-ascent/10"
+            className="border-border placeholder:text-muted/70 focus:border-ascent focus:ring-ascent/10 w-full rounded-xl border bg-white px-4 py-3 text-sm transition outline-none focus:ring-2"
             value={userPassword}
             onChange={(e) => {
               setUserPassword(e.target.value)
@@ -135,15 +126,15 @@ const Login = ({ successMessage = '' }) => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-1 rounded-xl bg-ascent px-5 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="bg-ascent mt-1 rounded-xl px-5 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? 'Logging in...' : 'Log in'}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted">
+      <p className="text-muted mt-6 text-center text-sm">
         Your first time here?{' '}
-        <span className="font-medium text-inc">
+        <span className="text-inc font-medium">
           Choose Sign up above to create an account.
         </span>
       </p>

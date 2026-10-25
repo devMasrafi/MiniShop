@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router'
 import { jwtDecode } from 'jwt-decode'
 import { FaBars, FaRegUserCircle, FaShoppingBag, FaTimes } from 'react-icons/fa'
+import CartButton from '../../ButtonComponents/CartButton'
 
 const Nav = () => {
   const [loginStatus, setLoginStatus] = useState(false)
@@ -68,10 +69,13 @@ const Nav = () => {
   const displayName =
     loggedInUser?.name || loggedInUser?.username || 'My account'
 
+  const isStaff =
+    loggedInUser?.role === 'admin' || loggedInUser?.role === 'employee'
+
   return (
     <header className="border-border sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
       <nav
-        className="mx-auto flex min-h-18 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8"
+        className="relative mx-auto flex min-h-18 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8"
         aria-label="Main navigation"
       >
         {/* Brand */}
@@ -102,13 +106,20 @@ const Nav = () => {
         <div className="hidden items-center gap-4 md:flex">
           {loginStatus ? (
             <>
-              <Link
-                to="/dashboard/overview"
-                className="text-inc hover:bg-canvas hover:text-ascent flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition"
-              >
-                <FaRegUserCircle className="text-ascent text-lg" />
-                <span className="max-w-32 truncate">{displayName}</span>
-              </Link>
+              {isStaff ? (
+                <Link
+                  to="/dashboard"
+                  className="text-inc hover:bg-canvas hover:text-ascent flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition"
+                >
+                  <FaRegUserCircle className="text-ascent text-lg" />
+                  <span className="max-w-32 truncate">{displayName}</span>
+                </Link>
+              ) : (
+                <div className="text-inc flex items-center gap-2 px-3 py-2 text-sm font-medium">
+                  <FaRegUserCircle className="text-ascent text-lg" />
+                  <span className="max-w-32 truncate">{displayName}</span>
+                </div>
+              )}
 
               <button
                 type="button"
@@ -149,6 +160,15 @@ const Nav = () => {
         >
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
+        {(!loginStatus || loggedInUser?.role === 'customer') && (
+          <div
+            className={`absolute top-20 right-5 shrink-0 sm:right-8 md:right-10 ${
+              menuOpen ? 'hidden md:block' : ''
+            }`}
+          >
+            <CartButton />
+          </div>
+        )}
       </nav>
 
       {/* Mobile navigation */}
@@ -188,14 +208,21 @@ const Nav = () => {
 
             {loginStatus ? (
               <>
-                <Link
-                  to="/dashboard/overview"
-                  onClick={closeMenu}
-                  className="text-inc hover:bg-canvas flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium"
-                >
-                  <FaRegUserCircle className="text-ascent text-lg" />
-                  <span>{displayName}</span>
-                </Link>
+                {isStaff ? (
+                  <Link
+                    to="/dashboard"
+                    onClick={closeMenu}
+                    className="text-inc hover:bg-canvas flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium"
+                  >
+                    <FaRegUserCircle className="text-ascent text-lg" />
+                    <span>{displayName}</span>
+                  </Link>
+                ) : (
+                  <div className="text-inc flex items-center gap-3 px-4 py-3 text-sm font-medium">
+                    <FaRegUserCircle className="text-ascent text-lg" />
+                    <span>{displayName}</span>
+                  </div>
+                )}
 
                 <button
                   type="button"
