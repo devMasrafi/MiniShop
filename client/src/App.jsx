@@ -12,7 +12,7 @@ import Users from './pages/DashboardPages/Users'
 import ProfileSettings from './pages/DashboardPages/ProfileSettings'
 import ProductDetails from './pages/ProductDetails'
 import DashboardHome from './component/LayoutComponents/Dashboard/DashboardHome'
-import RequireRole from './utils/requiredRole'
+import RequireRole from './utils/RequiredRole'
 
 function App() {
   return (
