@@ -2,7 +2,6 @@ import { Link, Navigate, Outlet } from 'react-router'
 import DashboardSidebar from './DashboardSidebar'
 import { getUser, isStaff } from '../../../utils/auth'
 
-
 const DashboardLayout = () => {
   const userData = getUser()
 
@@ -15,33 +14,31 @@ const DashboardLayout = () => {
   }
 
   return (
-    <main className="flex h-screen flex-col overflow-hidden">
+    <main className="bg-canvas text-foreground flex h-dvh flex-col overflow-hidden">
       {/* Top Navbar */}
-      <header className="border-border bg-canvas flex shrink-0 items-center justify-between border-b-2 px-4 py-3">
-        <div>
-          <h2>
-            <Link to="/dashboard/orders">LOGO</Link>
-          </h2>
-        </div>
+      <header className="border-border bg-canvas flex shrink-0 items-center justify-between gap-4 border-b px-4 py-3 sm:px-6">
+        <Link to="/dashboard" className="text-lg font-bold tracking-tight">
+          MiniShop
+          <span className="text-muted-foreground ml-2 text-xs font-normal">
+            Dashboard
+          </span>
+        </Link>
 
-        <nav>
-          <ul className="flex list-inside list-disc items-center gap-x-4">
-            <li className="px-3 py-1">Check Calendar</li>
-            <li className="px-3 py-1">Upcoming Events</li>
-            <li className="rounded-2xl border px-3 py-1">
-              <Link to="/products">Back To Shop</Link>
-            </li>
-          </ul>
-        </nav>
+        <Link
+          to="/products"
+          className="border-border hover:bg-ascent text-inc rounded-lg border px-3 py-2 text-sm font-medium transition-colors hover:text-white"
+        >
+          Back to Shop
+        </Link>
       </header>
 
       {/* Sidebar + Dashboard Content */}
-      <div className="flex flex-1 overflow-hidden">
-        <aside className="w-64 shrink-0 overflow-y-auto">
+      <div className="flex min-h-0 flex-1">
+        <aside className="border-border w-56 shrink-0 overflow-y-auto border-r sm:w-64">
           <DashboardSidebar userData={userData} />
         </aside>
 
-        <section className="flex-1 overflow-y-auto p-4">
+        <section className="min-w-0 flex-1 overflow-y-auto p-4 sm:p-6">
           <Outlet context={userData} />
         </section>
       </div>
