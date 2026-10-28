@@ -46,7 +46,68 @@ const loginUser = async (req, res, next) => {
     }
 };
 
+const getCurrentUser = async (req, res, next) => {
+    try {
+        const user = await userService.getProfile(req.user.userId);
+
+        return res.status(200).json({
+            success: true,
+            data: user,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateCurrentUser = async (req, res, next) => {
+    try {
+        const user = await userService.updateProfile(req.user.userId, req.body);
+
+        // Update the JWT name so the dashboard displays the new name.
+        const jwtToken = jwt.sign(
+            {
+                userId: user._id,
+                role: user.role,
+                name: user.name,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" },
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile updated successfully.",
+            data: user,
+            jwtToken,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateCurrentUserPassword = async (req, res, next) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        await userService.changePassword(
+            req.user.userId,
+            currentPassword,
+            newPassword,
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Password changed successfully.",
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
+    getCurrentUser,
+    updateCurrentUser,
+    updateCurrentUserPassword,
 };
