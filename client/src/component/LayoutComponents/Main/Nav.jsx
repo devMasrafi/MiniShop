@@ -24,7 +24,7 @@ const Nav = () => {
       try {
         const decoded = jwtDecode(token)
 
-        //  check JWT expiry.
+        // Check JWT expiry.
         if (decoded.exp && decoded.exp * 1000 <= Date.now()) {
           localStorage.removeItem('token')
           setLoginStatus(false)
@@ -72,6 +72,9 @@ const Nav = () => {
   const isStaff =
     loggedInUser?.role === 'admin' || loggedInUser?.role === 'employee'
 
+  // Staff go to the staff dashboard; customers go to their account dashboard.
+  const accountPath = isStaff ? '/dashboard' : '/account'
+
   return (
     <header className="border-border sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
       <nav
@@ -106,20 +109,13 @@ const Nav = () => {
         <div className="hidden items-center gap-4 md:flex">
           {loginStatus ? (
             <>
-              {isStaff ? (
-                <Link
-                  to="/dashboard"
-                  className="text-inc hover:bg-canvas hover:text-ascent flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition"
-                >
-                  <FaRegUserCircle className="text-ascent text-lg" />
-                  <span className="max-w-32 truncate">{displayName}</span>
-                </Link>
-              ) : (
-                <div className="text-inc flex items-center gap-2 px-3 py-2 text-sm font-medium">
-                  <FaRegUserCircle className="text-ascent text-lg" />
-                  <span className="max-w-32 truncate">{displayName}</span>
-                </div>
-              )}
+              <Link
+                to={accountPath}
+                className="text-inc hover:bg-canvas hover:text-ascent flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition"
+              >
+                <FaRegUserCircle className="text-ascent text-lg" />
+                <span className="max-w-32 truncate">{displayName}</span>
+              </Link>
 
               <button
                 type="button"
@@ -160,6 +156,8 @@ const Nav = () => {
         >
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
+
+        {/* Cart */}
         {(!loginStatus || loggedInUser?.role === 'customer') && (
           <div
             className={`absolute top-20 right-5 shrink-0 sm:right-8 md:right-10 ${
@@ -208,21 +206,14 @@ const Nav = () => {
 
             {loginStatus ? (
               <>
-                {isStaff ? (
-                  <Link
-                    to="/dashboard"
-                    onClick={closeMenu}
-                    className="text-inc hover:bg-canvas flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium"
-                  >
-                    <FaRegUserCircle className="text-ascent text-lg" />
-                    <span>{displayName}</span>
-                  </Link>
-                ) : (
-                  <div className="text-inc flex items-center gap-3 px-4 py-3 text-sm font-medium">
-                    <FaRegUserCircle className="text-ascent text-lg" />
-                    <span>{displayName}</span>
-                  </div>
-                )}
+                <Link
+                  to={accountPath}
+                  onClick={closeMenu}
+                  className="text-inc hover:bg-canvas flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium"
+                >
+                  <FaRegUserCircle className="text-ascent text-lg" />
+                  <span>{displayName}</span>
+                </Link>
 
                 <button
                   type="button"

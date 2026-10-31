@@ -16,7 +16,7 @@ const DashboardLayout = () => {
   return (
     <main className="bg-canvas text-foreground flex h-dvh flex-col overflow-hidden">
       {/* Top Navbar */}
-      <header className="border-border bg-canvas flex shrink-0 items-center justify-between gap-4 border-b px-4 py-3 sm:px-6">
+      <header className="border-border bg-canvas flex h-16 shrink-0 items-center justify-between gap-4 border-b px-4 sm:px-6">
         <Link to="/dashboard" className="text-lg font-bold tracking-tight">
           MiniShop
           <span className="text-muted-foreground ml-2 text-xs font-normal">
@@ -34,11 +34,13 @@ const DashboardLayout = () => {
 
       {/* Sidebar + Dashboard Content */}
       <div className="flex min-h-0 flex-1">
-        <aside className="border-border w-56 shrink-0 overflow-y-auto border-r sm:w-64">
+        {/* Sidebar */}
+        <aside className="hide-scrollbar border-border w-56 shrink-0 overflow-y-auto border-r sm:w-64">
           <DashboardSidebar userData={userData} />
         </aside>
 
-        <section className="min-w-0 flex-1 overflow-y-auto p-4 sm:p-6">
+        {/* Main dashboard content */}
+        <section className="hide-scrollbar min-h-0 min-w-0 flex-1 overflow-y-auto p-4 sm:p-6">
           <Outlet context={userData} />
         </section>
       </div>

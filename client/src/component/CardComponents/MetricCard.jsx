@@ -10,31 +10,35 @@ const MetricCard = ({
 
   return (
     <article
-      className={`w-full rounded-xl border px-6 py-5 ${
+      className={`w-full rounded-2xl border p-5 sm:p-6 ${
         isPrimary
-          ? 'border-border bg-ascent text-white sm:px-8 sm:py-7'
-          : 'border-inc/20 bg-surface text-inc'
+          ? 'border-ascent bg-ascent text-white'
+          : 'border-border bg-surface text-inc'
       }`}
     >
       <div className="flex items-center gap-3 pb-4">
-        <span className={`text-xl ${isPrimary ? 'text-white' : 'text-ascent'}`}>
+        <span
+          className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${
+            isPrimary ? 'bg-white/15 text-white' : 'bg-ascent/10 text-ascent'
+          }`}
+        >
           {icon}
         </span>
 
         <p
-          className={`font-medium capitalize ${
-            isPrimary ? 'text-emerald-100' : 'text-gray-600'
+          className={`font-medium ${
+            isPrimary ? 'text-white/85' : 'text-muted'
           }`}
         >
           {headings ?? 'Untitled metric'}
         </p>
       </div>
 
-      <div className="flex items-baseline gap-2">
+      <div className="flex min-w-0 items-baseline gap-2">
         {value != null && value !== '' && (
           <span
             className={`text-xl font-medium ${
-              isPrimary ? 'text-emerald-100' : 'text-gray-700'
+              isPrimary ? 'text-white/80' : 'text-muted'
             }`}
           >
             {value}
@@ -42,7 +46,7 @@ const MetricCard = ({
         )}
 
         <h2
-          className={`font-semibold tracking-tight ${
+          className={`min-w-0 truncate font-semibold tracking-tight ${
             isPrimary ? 'text-4xl sm:text-5xl' : 'text-3xl'
           }`}
         >
@@ -51,9 +55,7 @@ const MetricCard = ({
       </div>
 
       <p
-        className={`mt-3 text-sm ${
-          isPrimary ? 'text-white/80' : 'text-gray-500'
-        }`}
+        className={`mt-3 text-sm ${isPrimary ? 'text-white/75' : 'text-muted'}`}
       >
         {text ?? ''}
       </p>

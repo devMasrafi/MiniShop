@@ -13,6 +13,10 @@ import ProfileSettings from './pages/DashboardPages/ProfileSettings'
 import ProductDetails from './pages/ProductDetails'
 import DashboardHome from './component/LayoutComponents/Dashboard/DashboardHome'
 import RequireRole from './utils/RequiredRole'
+import CustomerAccountLayout from './pages/CustomerAccount/CustomerAccountLayout'
+import AccountOverview from './pages/CustomerAccount/AccountOverview'
+import CustomerOrders from './pages/CustomerAccount/CustomerOrders'
+import CustomerOrderDetails from './pages/CustomerAccount/CustomerOrderDetails'
 
 function App() {
   return (
@@ -24,7 +28,6 @@ function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetails />} />
           </Route>
-
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardHome />} />
             <Route path="orders" element={<Orders />} />
@@ -36,7 +39,13 @@ function App() {
               <Route path="users" element={<Users />} />
             </Route>
           </Route>
-
+          <Route path="/account" element={<CustomerAccountLayout />}>
+            <Route index element={<AccountOverview />} />
+            <Route path="orders" element={<CustomerOrders />} />
+            <Route path="orders/:orderId" element={<CustomerOrderDetails />} />
+            <Route path="settings" element={<ProfileSettings />} />
+          </Route>
+          s
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/forgotpass" element={<ForgotPass />} />
         </Routes>
